@@ -46,7 +46,7 @@ class SumarniVzorec:
 
     def extend(self, vzorec):
         for atom in vzorec.vsechnyAtomy():
-            if self.__atomPocet[atom]:
+            if self.__atomPocet.has_key(atom) and self.__atomPocet[atom]:
                 puvodni_pocet = self.__atomPocet[atom]
                 self.__atomPocet[atom] = puvodni_pocet + vzorec.pocet(atom.znacka)
             else:
