@@ -30,7 +30,8 @@ public class SumarniVzorecTest {
         String[] invalid_inputs = {"", "caOH", "Ca(OH)2", "2HO"};
         for (String input : invalid_inputs) {
             try {
-                SumarniVzorec vzorec = new SumarniVzorec(input);
+                new SumarniVzorec(input);
+                assertTrue("this code should not be executed", false);
             } catch (IllegalArgumentException exp) {
                 assertTrue(
                         exp.getMessage().contains("ma spatny format")
