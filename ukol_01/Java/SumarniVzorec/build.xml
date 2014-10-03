@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="sumarnivzorec" default="all">
+  
+  
+  <property file="build.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="700m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/rcs/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/.pyc/**"/>
+    <exclude name="**/.pyo/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/*.lib/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/.bundle/**"/>
+    <exclude name="**/*.rbc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.zip"/>
+    <include name="*.apk"/>
+    <include name="*.war"/>
+    <include name="*.egg"/>
+    <include name="*.ear"/>
+    <include name="*.ane"/>
+    <include name="*.swc"/>
+    <include name="*.jar"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+  </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin.1.7" value="${jdk.home.1.7}/bin"/>
+  <path id="jdk.classpath.1.7">
+    <fileset dir="${jdk.home.1.7}">
+      <include name="../java-1.7.0-openjdk-amd64/jre/lib/compilefontconfig.jar"/>
+      <include name="../java-1.7.0-openjdk-amd64/jre/lib/jce.jar"/>
+      <include name="../java-1.7.0-openjdk-amd64/jre/lib/jsse.jar"/>
+      <include name="../java-1.7.0-openjdk-amd64/jre/lib/rt.jar"/>
+      <include name="../java-1.7.0-openjdk-amd64/jre/lib/javazic.jar"/>
+      <include name="../java-1.7.0-openjdk-amd64/jre/lib/rhino.jar"/>
+      <include name="../java-1.7.0-openjdk-amd64/jre/lib/management-agent.jar"/>
+      <include name="../java-1.7.0-openjdk-amd64/jre/lib/charsets.jar"/>
+      <include name="../java-1.7.0-openjdk-amd64/jre/lib/resources.jar"/>
+      <include name="../java-1.7.0-openjdk-amd64/jre/lib/ext/localedata.jar"/>
+      <include name="../java-1.7.0-openjdk-amd64/jre/lib/ext/sunpkcs11.jar"/>
+      <include name="../java-1.7.0-openjdk-amd64/jre/lib/ext/java-atk-wrapper.jar"/>
+      <include name="../java-1.7.0-openjdk-amd64/jre/lib/ext/dnsns.jar"/>
+      <include name="../java-1.7.0-openjdk-amd64/jre/lib/ext/sunjce_provider.jar"/>
+      <include name="../java-1.7.0-openjdk-amd64/jre/lib/ext/pulse-java.jar"/>
+      <include name="../java-1.7.0-openjdk-amd64/jre/lib/ext/zipfs.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home.1.7}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.1.7}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.1.7"/>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module SumarniVzorec -->
+  
+  <dirname property="module.sumarnivzorec.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.sumarnivzorec" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.sumarnivzorec" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.sumarnivzorec" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.sumarnivzorec" value="-encoding UTF-8 -source 1.7 -target 1.7 ${compiler.args}"/>
+  
+  <property name="sumarnivzorec.output.dir" value="${module.sumarnivzorec.basedir}/out/production/SumarniVzorec"/>
+  <property name="sumarnivzorec.testoutput.dir" value="${module.sumarnivzorec.basedir}/out/test/SumarniVzorec"/>
+  
+  <path id="sumarnivzorec.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="sumarnivzorec.module.production.classpath">
+    <path refid="${module.jdk.classpath.sumarnivzorec}"/>
+    <pathelement location="${idea.libs}/lib/hamcrest-core-1.3.jar"/>
+    <pathelement location="${idea.libs}/lib/hamcrest-library-1.3.jar"/>
+    <pathelement location="${idea.libs}/lib/junit-4.11.jar"/>
+  </path>
+  
+  <path id="sumarnivzorec.runtime.production.module.classpath">
+    <pathelement location="${sumarnivzorec.output.dir}"/>
+    <pathelement location="${idea.libs}/lib/hamcrest-core-1.3.jar"/>
+    <pathelement location="${idea.libs}/lib/hamcrest-library-1.3.jar"/>
+    <pathelement location="${idea.libs}/lib/junit-4.11.jar"/>
+  </path>
+  
+  <path id="sumarnivzorec.module.classpath">
+    <path refid="${module.jdk.classpath.sumarnivzorec}"/>
+    <pathelement location="${sumarnivzorec.output.dir}"/>
+    <pathelement location="${idea.libs}/lib/hamcrest-core-1.3.jar"/>
+    <pathelement location="${idea.libs}/lib/hamcrest-library-1.3.jar"/>
+    <pathelement location="${idea.libs}/lib/junit-4.11.jar"/>
+  </path>
+  
+  <path id="sumarnivzorec.runtime.module.classpath">
+    <pathelement location="${sumarnivzorec.testoutput.dir}"/>
+    <pathelement location="${sumarnivzorec.output.dir}"/>
+    <pathelement location="${idea.libs}/lib/hamcrest-core-1.3.jar"/>
+    <pathelement location="${idea.libs}/lib/hamcrest-library-1.3.jar"/>
+    <pathelement location="${idea.libs}/lib/junit-4.11.jar"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.sumarnivzorec">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.sumarnivzorec">
+    <patternset refid="excluded.from.module.sumarnivzorec"/>
+  </patternset>
+  
+  <path id="sumarnivzorec.module.sourcepath">
+    <dirset dir="${module.sumarnivzorec.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.sumarnivzorec" depends="compile.module.sumarnivzorec.production,compile.module.sumarnivzorec.tests" description="Compile module SumarniVzorec"/>
+  
+  <target name="compile.module.sumarnivzorec.production" description="Compile module SumarniVzorec; production classes">
+    <mkdir dir="${sumarnivzorec.output.dir}"/>
+    <javac destdir="${sumarnivzorec.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.sumarnivzorec}/javac">
+      <compilerarg line="${compiler.args.sumarnivzorec}"/>
+      <bootclasspath refid="sumarnivzorec.module.bootclasspath"/>
+      <classpath refid="sumarnivzorec.module.production.classpath"/>
+      <src refid="sumarnivzorec.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.sumarnivzorec"/>
+    </javac>
+    
+    <copy todir="${sumarnivzorec.output.dir}">
+      <fileset dir="${module.sumarnivzorec.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.sumarnivzorec.tests" depends="compile.module.sumarnivzorec.production" description="compile module SumarniVzorec; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.sumarnivzorec" description="cleanup module">
+    <delete dir="${sumarnivzorec.output.dir}"/>
+    <delete dir="${sumarnivzorec.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.sumarnivzorec" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.sumarnivzorec" description="build all modules"/>
+  
+  <target name="init.artifacts">
+    <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
+    <property name="artifact.output.ukol_01" value="${basedir}/out/artifacts/ukol_01"/>
+    <mkdir dir="${artifacts.temp.dir}"/>
+    <property name="temp.jar.path.ukol_01.jar" value="${artifacts.temp.dir}/ukol_01.jar"/>
+  </target>
+  
+  <target name="artifact.ukol_01" depends="init.artifacts, compile.module.sumarnivzorec" description="Build &#39;ukol_01&#39; artifact">
+    <property name="artifact.temp.output.ukol_01" value="${artifacts.temp.dir}/ukol_01"/>
+    <mkdir dir="${artifact.temp.output.ukol_01}"/>
+    <jar destfile="${temp.jar.path.ukol_01.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
+      <zipfileset file="${basedir}/META-INF/MANIFEST.MF" prefix="META-INF"/>
+      <zipfileset dir="${sumarnivzorec.output.dir}"/>
+      <zipfileset file="${idea.libs}/lib/junit-4.11.jar"/>
+      <zipfileset file="${idea.libs}/lib/hamcrest-core-1.3.jar"/>
+      <zipfileset file="${idea.libs}/lib/hamcrest-library-1.3.jar"/>
+    </jar>
+    <copy file="${temp.jar.path.ukol_01.jar}" tofile="${artifact.temp.output.ukol_01}/ukol_01.jar"/>
+  </target>
+  
+  <target name="build.all.artifacts" depends="artifact.ukol_01" description="Build all artifacts">
+    <mkdir dir="${artifact.output.ukol_01}"/>
+    <copy todir="${artifact.output.ukol_01}">
+      <fileset dir="${artifact.temp.output.ukol_01}"/>
+    </copy>
+    
+    <!-- Delete temporary files -->
+    <delete dir="${artifacts.temp.dir}"/>
+  </target>
+  
+  <target name="all" depends="build.modules, build.all.artifacts" description="build all"/>
+</project>
