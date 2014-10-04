@@ -49,6 +49,11 @@ public class NodeTest {
         assertTrue(!node1.isConnectedTo(node3));
         assertTrue(!node3.isConnectedTo(node1));
         assertTrue(node2.isConnectedTo(node3));
+
+        node1.addNode(node1);
+        assertTrue(node1.isConnectedTo(node1));
+        node1.removeNode(node1);
+        assertTrue(!node1.isConnectedTo(node1));
     }
 
     @Test
@@ -98,7 +103,7 @@ public class NodeTest {
     @Test
     public void testGetLabel() throws Exception {
         Node node = new Node();
-        assertTrue(node.getLabel() == 0);
+        assertTrue(node.getLabel() == node.hashCode());
         node = new Node(5);
         assertTrue(node.getLabel() == 5);
     }
@@ -128,4 +133,45 @@ public class NodeTest {
         nodes.add(sneaky);
         assertTrue(!node1.getConnectedNodes().contains(sneaky));
     }
+
+    @Test
+    public void testAddToGraph() {
+        Graph graph1 = new Graph();
+        Graph graph2 = new Graph();
+        Node node1 = someNodes.get(0);
+        Node node2 = someNodes.get(1);
+
+        assertTrue(graph1.getNodeCount() == 0);
+        assertTrue(graph2.getEdgeCount() == 0);
+
+        node1.addToGraph(graph1);
+        node2.addToGraph(graph2);
+        assertTrue(node1.getGraphCount() == 1
+                && node1.getAssociatedGraphs().contains(graph1)
+                && !node1.getAssociatedGraphs().contains(graph2)
+        );
+    }
+
+    @Test
+    public void removeFromGraph() {
+        Graph graph1 = new Graph();
+        Node node1 = someNodes.get(0);
+        Node node2 = someNodes.get(1);
+        Node node3 = someNodes.get(2);
+
+        graph1.addNode(node1);
+        graph1.addNode(node2);
+        graph1.connectNodes(node1, node2);
+
+        node3.addNode(node2);
+
+        assertTrue(graph1.getNodeCount() == 2 && graph1.getEdgeCount() == 1);
+        node3.removeFromGraph(graph1);
+        assertTrue(graph1.getNodeCount() == 2 && graph1.getEdgeCount() == 1);
+        node3.addToGraph(graph1);
+        assertTrue(graph1.getNodeCount() == 3 && graph1.getEdgeCount() == 2);
+        node2.removeFromGraph(graph1);
+        assertTrue(graph1.getNodeCount() == 2 && graph1.getEdgeCount() == 0);
+    }
+
 }

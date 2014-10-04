@@ -2,7 +2,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Třída reprezentující vrchol grafu.
+ * Třída reprezentující vrchol obecného neorientovaného grafu.
  *
  * Created by Martin Šícho on 3.10.14.
  */
@@ -11,6 +11,7 @@ public class Node {
     // members
 
     private Set<Node> connectedNodes;
+    private Set<Graph> associatedGraphs;
     private int id;
     private int label;
     private static int nextId = Integer.MIN_VALUE;
@@ -23,7 +24,7 @@ public class Node {
      * @throws RuntimeException
      */
     public Node() throws RuntimeException {
-        createFromLabel(0);
+        createFromLabel(nextId);
     }
 
     /**
@@ -51,6 +52,7 @@ public class Node {
         this.id = nextId++;
         this.label = label;
         this.connectedNodes = new HashSet<>();
+        this.associatedGraphs = new HashSet<>();
     }
 
     /**
@@ -111,6 +113,28 @@ public class Node {
         return connectedNodes.contains(node);
     }
 
+    public void addToGraph(Graph graph) {
+        if (!this.isInGraph(graph)) {
+            associatedGraphs.add(graph);
+            graph.addNode(this);
+        }
+    }
+
+    public void removeFromGraph(Graph graph) {
+        if (this.isInGraph(graph)) {
+            associatedGraphs.remove(graph);
+            graph.removeNode(this);
+        }
+    }
+
+    public boolean isInGraph(Graph graph) {
+        return associatedGraphs.contains(graph);
+    }
+
+    public int getGraphCount() {
+        return associatedGraphs.size();
+    }
+
     // overrides
 
     @Override
@@ -140,6 +164,10 @@ public class Node {
 
     public int getLabel() {
         return label;
+    }
+
+    public Set<Graph> getAssociatedGraphs() {
+        return associatedGraphs;
     }
 
     // setters
