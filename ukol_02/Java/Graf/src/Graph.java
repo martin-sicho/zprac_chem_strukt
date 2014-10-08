@@ -1,7 +1,13 @@
 import java.io.Reader;
+import java.io.StringWriter;
 import java.io.Writer;
+import java.text.ParseException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Třída reprezentující obecný neorientovaný graf.
@@ -46,6 +52,9 @@ public class Graph {
      */
     Graph(Set<Node> nodeSet) {
         this();
+        for (Node node : nodeSet) {
+            node.addToGraph(this);
+        }
         this.nodeSet = new HashSet<>(nodeSet);
     }
 
@@ -66,9 +75,9 @@ public class Graph {
      *
      * {@code počet_vrcholů;konektivity},
      *
-     * kde konektivity jsou oddělené čárkou a ve formátu: {@code číslo_vrcholu-číslo_vrcholu}.
+     * kde konektivity jsou ukončené čárkou a ve formátu: {@code číslo_vrcholu-číslo_vrcholu}.
      *
-     * (např.: 6;1-2,2-3,3-4,4-5,5-6,6-1).
+     * (např.: 6;1-2,2-3,3-4,4-5,5-6,6-1,).
      *
      * @param reader instance {@link java.io.Reader}
      * @return instance třídy {@link Graph}
@@ -76,8 +85,44 @@ public class Graph {
      * @throws java.text.ParseException
      */
     public static Graph readGraph(Reader reader) throws java.io.IOException, java.text.ParseException {
-        // TODO: vytvorit
-        return new Graph();
+        StringWriter input_writer = new StringWriter();
+
+        int data = reader.read();
+        while (data != -1) {
+            input_writer.append((char) data);
+            data = reader.read();
+        }
+
+        input_writer.flush();
+        String input = input_writer.toString();
+
+        Pattern pattern = Pattern.compile("^[0-9]+;([0-9]+-[0-9]+,)+$");
+        Matcher matcher = pattern.matcher(input);
+
+        if (!matcher.matches()) {
+            throw new ParseException(String.format("'%s' is not a valid input", input), 0);
+        }
+
+
+        matcher = Pattern.compile("^([0-9]+);").matcher(input);
+        matcher.find();
+        int node_count = Integer.parseInt(matcher.group(1));
+        Map<String, Node> node_map = new HashMap<>();
+        for (int i = 1; i <= node_count; i++) {
+            Node new_node = new Node(i);
+            node_map.put(new_node.getLabel(), new_node);
+        }
+        matcher = Pattern.compile("([0-9])+-([0-9])+").matcher(input);
+
+        while (matcher.find()) {
+            String node1_label = matcher.group(1);
+            String node2_label = matcher.group(2);
+            node_map.get(node1_label).addNode(node_map.get(node2_label));
+        }
+
+        System.out.println( "Successfully read input: '" + input + "'");
+
+        return new Graph(new HashSet<>(node_map.values()));
     }
 
     // non-static methods

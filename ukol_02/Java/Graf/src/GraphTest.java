@@ -1,6 +1,10 @@
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -21,7 +25,7 @@ public class GraphTest {
     }
 
     @Test
-    public void testAddNode() throws Exception {
+    public void testAddNode() {
         Graph graph1 = new Graph();
         Graph graph2 = new Graph(graph1);
         Node node1 = someNodes.get(0);
@@ -53,7 +57,7 @@ public class GraphTest {
     }
 
     @Test
-    public void testRemoveNode() throws Exception {
+    public void testRemoveNode() {
         Graph graph1 = new Graph();
         Node node1 = someNodes.get(0);
         Node node2 = someNodes.get(1);
@@ -98,7 +102,7 @@ public class GraphTest {
     }
 
     @Test
-    public void testToString() throws Exception {
+    public void testToString() {
         Set<Node> nodeSet = new HashSet<>();
         nodeSet.add(someNodes.get(0));
         nodeSet.add(someNodes.get(1));
@@ -116,4 +120,20 @@ public class GraphTest {
         graph1.setLabel("muj_graf2");
         assertTrue(graph1.toString().equals("Graph muj_graf2[nodes:2,edges:2]"));
     }
+
+    @Test
+    public void testReadGraph() {
+        Reader reader = new StringReader("6;1-2,2-3,3-4,4-5,5-6,6-1,");
+        Graph graph = null;
+        try {
+            graph = Graph.readGraph(reader);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        assertTrue(graph.getEdgeCount() == 6 && graph.getNodeCount() == 6);
+
+    }
+
 }

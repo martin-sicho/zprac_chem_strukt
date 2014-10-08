@@ -86,12 +86,17 @@ public class NodeTest {
         Node node1 = someNodes.get(0);
         Node node2 = someNodes.get(1);
         Node node3 = someNodes.get(2);
+        node1.setLabel("A");
+        node2.setLabel("B");
+        node3.setLabel("C");
+
         node1.addNode(node2);
         node1.addNode(node3);
         node2.addNode(node3);
-        assertTrue(node1.toString().equals("Node[order:2]"));
-        assertTrue(node2.toString().equals("Node[order:2]"));
-        assertTrue(node3.toString().equals("Node[order:2]"));
+
+        assertTrue(node1.toString().equals("Node[order:2,label:A]"));
+        assertTrue(node2.toString().equals("Node[order:2,label:B]"));
+        assertTrue(node3.toString().equals("Node[order:2,label:C]"));
     }
 
     @Test

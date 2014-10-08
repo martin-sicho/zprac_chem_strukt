@@ -176,7 +176,7 @@ public class Node {
 
     @Override
     public String toString() {
-        return String.format("Node[order:%d]", connectedNodes.size());
+        return String.format("Node[order:%d,label:%s]", connectedNodes.size(), getLabel());
     }
 
     // getters
