@@ -103,16 +103,16 @@ public class NodeTest {
     @Test
     public void testGetLabel() throws Exception {
         Node node = new Node();
-        assertTrue(node.getLabel() == node.hashCode());
+        assertTrue(node.getLabel().equals( ((Integer) node.hashCode()).toString() ));
         node = new Node(5);
-        assertTrue(node.getLabel() == 5);
+        assertTrue( node.getLabel().equals("5"));
     }
 
     @Test
     public void testSetLabel() throws Exception {
         Node node = new Node();
-        node.setLabel(5);
-        assertTrue(node.getLabel() == 5);
+        node.setLabel("5");
+        assertTrue(node.getLabel().equals("5"));
     }
 
     @Test

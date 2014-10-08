@@ -2,7 +2,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -97,15 +99,21 @@ public class GraphTest {
 
     @Test
     public void testToString() throws Exception {
-        Graph graph1 = new Graph();
+        Set<Node> nodeSet = new HashSet<>();
+        nodeSet.add(someNodes.get(0));
+        nodeSet.add(someNodes.get(1));
+
+        Graph graph1 = new Graph(nodeSet);
+
         Node node1 = someNodes.get(0);
         Node node2 = someNodes.get(1);
-
-        graph1.addNode(node1);
-        graph1.addNode(node2);
 
         graph1.connectNodes(node1, node2);
         graph1.connectNodes(node1, node1);
         assertTrue(graph1.toString().equals("Graph[nodes:2,edges:2]"));
+        Graph graph2 = new Graph("muj_graf");
+        assertTrue(graph2.toString().equals("Graph muj_graf[nodes:0,edges:0]"));
+        graph1.setLabel("muj_graf2");
+        assertTrue(graph1.toString().equals("Graph muj_graf2[nodes:2,edges:2]"));
     }
 }

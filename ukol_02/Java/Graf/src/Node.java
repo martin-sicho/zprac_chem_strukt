@@ -10,21 +10,34 @@ public class Node {
 
     // members
 
+    /**
+     * všechny vrcholy spojené hranou s tímto vrcholem
+     */
     private Set<Node> connectedNodes;
+    /**
+     * všechny grafy, které obsahují tento vrchol
+     */
     private Set<Graph> associatedGraphs;
+    /**
+     * jednoznačný identifikátor vrcholu
+     */
     private int id;
-    private int label;
+    /**
+     * označení volitelné uživatelem (nemusí být unikátní)
+     */
+    private String label;
     private static int nextId = Integer.MIN_VALUE;
 
     // constructors
 
     /**
-     * Pokud vytvoříme vrchol bez popisku, defaultně se mu přiřadí popisek 0.
+     * Pokud vytvoříme vrchol bez popisku, defaultně se mu přiřadí
+     * jeho id jako popisek.
      *
      * @throws RuntimeException
      */
     public Node() throws RuntimeException {
-        createFromLabel(nextId);
+        this( nextId );
     }
 
     /**
@@ -33,8 +46,18 @@ public class Node {
      * @param label popisek
      * @throws RuntimeException
      */
-    public Node(int label) throws RuntimeException {
+    public Node(String label) throws RuntimeException {
         createFromLabel(label);
+    }
+
+    /**
+     * Vytvoření vrcholu s daným číselným popiskem.
+     *
+     * @param label popisek
+     * @throws RuntimeException
+     */
+    public Node(int label) throws RuntimeException {
+        this( ((Integer) label).toString() );
     }
 
     // non-static methods
@@ -45,7 +68,7 @@ public class Node {
      * @param label popisek
      * @throws RuntimeException
      */
-    private void createFromLabel(int label) throws RuntimeException {
+    private void createFromLabel(String label) throws RuntimeException {
         if (nextId + 1 == Integer.MIN_VALUE) {
             throw new RuntimeException("Counter overflow. Cannot create any new Nodes.");
         }
@@ -162,7 +185,7 @@ public class Node {
         return id;
     }
 
-    public int getLabel() {
+    public String getLabel() {
         return label;
     }
 
@@ -172,7 +195,7 @@ public class Node {
 
     // setters
 
-    public void setLabel(int label) {
+    public void setLabel(String label) {
         this.label = label;
     }
 }
