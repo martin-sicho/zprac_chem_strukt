@@ -54,8 +54,8 @@ public class Graph {
         this();
         for (Node node : nodeSet) {
             node.addToGraph(this);
+            nodeSet.add(node);
         }
-        this.nodeSet = new HashSet<>(nodeSet);
     }
 
     /**
@@ -64,7 +64,7 @@ public class Graph {
      * @param graph graf, ze kterého se má vytvořit tento nový graf
      */
     Graph(Graph graph) {
-        this();
+        this.label = graph.getLabel() + "_clone";
         this.nodeSet = new HashSet<>(graph.nodeSet);
     }
 
@@ -95,6 +95,7 @@ public class Graph {
 
         input_writer.flush();
         String input = input_writer.toString();
+        input_writer.close();
 
         Pattern pattern = Pattern.compile("^[0-9]+;([0-9]+-[0-9]+,)+$");
         Matcher matcher = pattern.matcher(input);
