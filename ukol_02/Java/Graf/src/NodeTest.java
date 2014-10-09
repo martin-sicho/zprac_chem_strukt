@@ -20,7 +20,7 @@ public class NodeTest {
     }
 
     @Test
-    public void testAddNode() throws Exception {
+    public void testAddNode() {
         Node node1 = someNodes.get(0);
         Node node2 = someNodes.get(1);
         node1.addNode(node2);

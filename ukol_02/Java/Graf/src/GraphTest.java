@@ -159,7 +159,31 @@ public class GraphTest {
             e.printStackTrace();
         }
 
-        assertTrue(string_writer.toString().equals("5;1-2,1-3,1-4,1-5,"));
+        System.out.println(String.format("Writing representation: %s", string_writer.toString()));
+        assertTrue(string_writer.toString().equals("5;1-2,2-3,2-4,2-5,"));
+    }
+
+    @Test (expected=IllegalArgumentException.class)
+    public void testGetNeigbors() {
+        Graph graph = new Graph();
+        Node node1 = someNodes.get(0);
+        Node node2 = someNodes.get(1);
+        Node node3 = someNodes.get(2);
+        Node node4 = someNodes.get(3);
+        node2.addNode(node1);
+        node2.addNode(node3);
+        node2.addNode(node4);
+        graph.addNode(node1);
+        graph.addNode(node2);
+        graph.addNode(node3);
+
+        assertTrue(graph.getNeighbors(node2).size() == 2);
+        for (Node node : graph.getNeighbors(node2)) {
+            assertTrue(node == node1 || node == node3);
+        }
+
+        Node node5 = someNodes.get(4);
+        graph.getNeighbors(node5);
     }
 
 }

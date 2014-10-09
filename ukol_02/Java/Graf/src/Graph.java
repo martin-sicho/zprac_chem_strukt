@@ -272,7 +272,7 @@ public class Graph {
             }
             return neigbors;
         } else {
-            throw new IllegalArgumentException( String.format("Node '%s' is not present in graph '%s'.", node.getLabel(), this.getLabel()) );
+            throw new IllegalArgumentException( String.format("Node '%s' is not present in graph '%s'.", node.getLabel(), this.toString()) );
         }
     }
 
