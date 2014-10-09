@@ -4,6 +4,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -134,6 +135,31 @@ public class GraphTest {
         }
         assertTrue(graph.getEdgeCount() == 6 && graph.getNodeCount() == 6);
 
+    }
+
+    @Test
+    public void testWriteGraph() {
+        boolean first = true;
+        Node first_node = null;
+        for (Node node : someNodes.subList(0, 5)) {
+            if (first) {
+                first = false;
+                first_node = node;
+                continue;
+            }
+            node.addNode(first_node);
+        }
+        Graph graph = new Graph(new HashSet<>(someNodes.subList(0, 5)));
+
+
+        StringWriter string_writer = new StringWriter();
+        try {
+            graph.writeGraph(string_writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        assertTrue(string_writer.toString().equals("5;1-2,1-3,1-4,1-5,"));
     }
 
 }

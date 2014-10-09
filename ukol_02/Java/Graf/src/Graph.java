@@ -132,11 +132,34 @@ public class Graph {
      * Zapíše tento graf do instance {@link java.io.Writer} ve stejném formátu
      * jako používá {@link Graph#readGraph(java.io.Reader reader)} pro načtení grafu.
      *
+     * <br />
+     * <em>Poznámka:</em> čísla jednotlivých vrcholů se generují automaticky, takže pokud byl
+     * graf načten pomocí {@link Graph#readGraph(java.io.Reader reader)}, budou se
+     * čísla vrcholů ve výstupu z této metody pravděpodobně lišit od těch původních.
+     * Topologie grafu samozřejmě zůstává zachována.
+     *
      * @param writer instance {@link java.io.Writer}
      * @throws java.io.IOException
      */
     public void writeGraph(Writer writer) throws java.io.IOException {
-        // TODO: vytvorit
+        Map<Node, Integer> node_label = new HashMap<>();
+        int label_counter = 0;
+        for (Node node : nodeSet) {
+            node_label.put(node, ++label_counter);
+        }
+
+        writer.write(String.format("%d;", this.getNodeCount()));
+        Set<Node> visited = new HashSet<>();
+        for (Node node : nodeSet) {
+            int label = node_label.get(node);
+            visited.add(node);
+            for (Node neigbor : this.getNeighbors(node)) {
+                if (!visited.contains(neigbor)) {
+                    int neigbor_label = node_label.get(neigbor);
+                    writer.write(String.format("%d-%d,", label, neigbor_label));
+                }
+            }
+        }
     }
 
     /**
@@ -217,17 +240,40 @@ public class Graph {
         long self_connected = 0;
 
         for (Node node : nodeSet) {
-            for (Node neighbor : node.getConnectedNodes()) {
-                if (neighbor.isInGraph(this)) {
-                    if (!neighbor.equals(node)) {
-                        ++edge_count;
-                    } else {
-                        ++self_connected;
-                    }
+            for (Node neighbor : this.getNeighbors(node)) {
+                if (!neighbor.equals(node)) {
+                    ++edge_count;
+                } else {
+                    ++self_connected;
                 }
             }
         }
         return edge_count / 2 + self_connected;
+    }
+
+    /**
+     * Vrátí {@link java.util.Set} vrcholů, které jsou sousedy
+     * daného vrcholu v tomto grafu.
+     *
+     * Pokud se daný vrchol nenachází v tomto grafu, vyhodí program výjimku
+     * {@link java.lang.IllegalArgumentException}.
+     *
+     * @param node vstupní vrchol tohoto grafu
+     * @return {@link java.util.Set} vrcholů, které jsou sousedy vstupn9ho vrcholu
+     * @throws IllegalArgumentException indikuje, že vstupní vrchol se nenachází v tomto grafu
+     */
+    public Set<Node> getNeighbors(Node node) throws IllegalArgumentException {
+        if (this.hasNode(node)) {
+            Set<Node> neigbors = new HashSet<>();
+            for (Node neighbor : node.getConnectedNodes()) {
+                if (neighbor.isInGraph(this)) {
+                    neigbors.add(neighbor);
+                }
+            }
+            return neigbors;
+        } else {
+            throw new IllegalArgumentException( String.format("Node '%s' is not present in graph '%s'.", node.getLabel(), this.getLabel()) );
+        }
     }
 
     // overrides
