@@ -2,10 +2,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.text.ParseException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -276,6 +273,69 @@ public class Graph {
         }
     }
 
+    /**
+     * Vrátí celou komponentu tohoto grafu, která obsahuje {@code startNode},
+     * jako novou instanci třídy {@link Graph}.
+     *
+     * @param startNode vrchol tohoto grafu, který má být obsažen v dané komponentě.
+     * @return komponenta se {@code startNode} jako {@link Graph}
+     * @throws IllegalArgumentException
+     */
+    public Graph getConnectedComponent(Node startNode) throws IllegalArgumentException {
+        if (this.hasNode(startNode)) {
+            Node current_node = startNode;
+            Queue<Node> queue = new LinkedList<>();
+            Set<Node> visited = new HashSet<>();
+
+            queue.add(current_node);
+            while (!queue.isEmpty()) {
+                current_node = queue.poll();
+                visited.add(current_node);
+                Set<Node> neighbors = this.getNeighbors(current_node);
+                for (Node neighbor : neighbors) {
+                    if (!visited.contains(neighbor)) {
+                        queue.add(neighbor);
+                    }
+                }
+            }
+
+            return new Graph(visited);
+        } else {
+            throw new IllegalArgumentException( String.format("Node '%s' is not present in graph '%s'.", startNode.getLabel(), this.toString()) );
+        }
+    }
+
+    /**
+     * Metoda vrací všechny komponenty obsažené v tomto grafu
+     * jako {@link java.util.Set}.
+     *
+     * @return včechny komponenty grafu
+     */
+    public Set<Graph> getConnectedComponents() {
+        long all_nodes_count = this.getNodeCount();
+        long component_nodes_count = 0;
+        Set<Graph> found_components = new HashSet<>();
+        Set<Node> not_visited = new HashSet<>(nodeSet);
+
+        while (all_nodes_count != component_nodes_count) {
+            Graph component = getConnectedComponent(not_visited.iterator().next());
+            not_visited.removeAll(component.getNodeSet());
+            found_components.add(component);
+            component_nodes_count += component.getNodeCount();
+        }
+        return found_components;
+    }
+
+    /**
+     * Metoda vrací všechny komponenty obsažené v tomto grafu
+     * jako {@link java.util.Set}.
+     *
+     * @return včechny komponenty grafu
+     */
+    public int getConnectedComponentsCount() {
+        return getConnectedComponents().size();
+    }
+
     // overrides
 
     /**
@@ -301,5 +361,14 @@ public class Graph {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    /**
+     * Vrací všechny vrcholy grafu jako {@link java.util.Set}.
+     *
+     * @return kompletní množina všech vrcholů této instance
+     */
+    public Set<Node> getNodeSet() {
+        return new HashSet<>(nodeSet);
     }
 }

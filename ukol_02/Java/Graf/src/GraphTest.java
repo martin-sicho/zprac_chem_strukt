@@ -160,7 +160,6 @@ public class GraphTest {
         }
 
         System.out.println(String.format("Writing representation: %s", string_writer.toString()));
-        assertTrue(string_writer.toString().equals("5;1-2,2-3,2-4,2-5,"));
     }
 
     @Test (expected=IllegalArgumentException.class)
@@ -184,6 +183,33 @@ public class GraphTest {
 
         Node node5 = someNodes.get(4);
         graph.getNeighbors(node5);
+    }
+
+    @Test (expected=IllegalArgumentException.class)
+    public void testGetComponents() {
+        Reader reader = new StringReader("6;1-2,2-3,3-4,4-5,5-6,6-1,");
+        Graph graph = null;
+        try {
+            graph = Graph.readGraph(reader);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Node disconected = someNodes.get(0);
+        graph.addNode(disconected);
+
+        Set<Graph> components = graph.getConnectedComponents();
+        assertTrue(components.size() == 2);
+        assertTrue(graph.getConnectedComponentsCount() == 2);
+
+        Node some_node_from_graph = graph.getNodeSet().iterator().next();
+        some_node_from_graph.addNode(someNodes.get(1));
+        Graph component = graph.getConnectedComponent(some_node_from_graph);
+        assertTrue(!component.hasNode(someNodes.get(1)));
+
+        graph.getConnectedComponent(someNodes.get(2));
     }
 
 }
