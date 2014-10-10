@@ -86,17 +86,17 @@ public class NodeTest {
         Node node1 = someNodes.get(0);
         Node node2 = someNodes.get(1);
         Node node3 = someNodes.get(2);
-        node1.setLabel("A");
-        node2.setLabel("B");
-        node3.setLabel("C");
+        node1.setName("A");
+        node2.setName("B");
+        node3.setName("C");
 
         node1.addNode(node2);
         node1.addNode(node3);
         node2.addNode(node3);
 
-        assertTrue(node1.toString().equals("Node[order:2,label:A]"));
-        assertTrue(node2.toString().equals("Node[order:2,label:B]"));
-        assertTrue(node3.toString().equals("Node[order:2,label:C]"));
+        assertTrue(node1.toString().equals("Node[order:2,name:A]"));
+        assertTrue(node2.toString().equals("Node[order:2,name:B]"));
+        assertTrue(node3.toString().equals("Node[order:2,name:C]"));
     }
 
     @Test
@@ -106,18 +106,18 @@ public class NodeTest {
     }
 
     @Test
-    public void testGetLabel() throws Exception {
+    public void testGetName() throws Exception {
         Node node = new Node();
-        assertTrue(node.getLabel().equals( ((Integer) node.hashCode()).toString() ));
+        assertTrue(node.getName().equals( ((Integer) node.hashCode()).toString() ));
         node = new Node(5);
-        assertTrue( node.getLabel().equals("5"));
+        assertTrue( node.getName().equals("5"));
     }
 
     @Test
-    public void testSetLabel() throws Exception {
+    public void testSetName() throws Exception {
         Node node = new Node();
-        node.setLabel("5");
-        assertTrue(node.getLabel().equals("5"));
+        node.setName("5");
+        assertTrue(node.getName().equals("5"));
     }
 
     @Test

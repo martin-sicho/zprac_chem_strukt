@@ -25,7 +25,7 @@ public class Node {
     /**
      * označení volitelné uživatelem (nemusí být unikátní)
      */
-    private String label;
+    private String name;
     private static int nextId = Integer.MIN_VALUE;
 
     // constructors
@@ -34,7 +34,7 @@ public class Node {
      * Pokud vytvoříme vrchol bez popisku, defaultně se mu přiřadí
      * jeho id jako popisek.
      *
-     * @throws RuntimeException
+     * @throws RuntimeException v případě chyby vyhodí výjimku
      */
     public Node() throws RuntimeException {
         this( nextId );
@@ -43,18 +43,18 @@ public class Node {
     /**
      * Vytvoření vrcholu s daným popiskem.
      *
-     * @param label popisek
-     * @throws RuntimeException
+     * @param name popisek
+     * @throws RuntimeException v případě chyby vyhodí výjimku
      */
-    public Node(String label) throws RuntimeException {
-        createFromLabel(label);
+    public Node(String name) throws RuntimeException {
+        createFromLabel(name);
     }
 
     /**
      * Vytvoření vrcholu s daným číselným popiskem.
      *
      * @param label popisek
-     * @throws RuntimeException
+     * @throws RuntimeException v případě chyby vyhodí výjimku
      */
     public Node(int label) throws RuntimeException {
         this( ((Integer) label).toString() );
@@ -66,14 +66,14 @@ public class Node {
      * Metoda, která obaluje vytvoření nové instance z popisku.
      *
      * @param label popisek
-     * @throws RuntimeException
+     * @throws RuntimeException v případě chyby vyhodí výjimku
      */
     private void createFromLabel(String label) throws RuntimeException {
         if (nextId + 1 == Integer.MIN_VALUE) {
             throw new RuntimeException("Counter overflow. Cannot create any new Nodes.");
         }
         this.id = nextId++;
-        this.label = label;
+        this.name = label;
         this.connectedNodes = new HashSet<>();
         this.associatedGraphs = new HashSet<>();
     }
@@ -176,7 +176,7 @@ public class Node {
 
     @Override
     public String toString() {
-        return String.format("Node[order:%d,label:%s]", connectedNodes.size(), getLabel());
+        return String.format("Node[order:%d,name:%s]", connectedNodes.size(), getName());
     }
 
     // getters
@@ -185,8 +185,8 @@ public class Node {
         return id;
     }
 
-    public String getLabel() {
-        return label;
+    public String getName() {
+        return name;
     }
 
     public Set<Graph> getAssociatedGraphs() {
@@ -195,7 +195,7 @@ public class Node {
 
     // setters
 
-    public void setLabel(String label) {
-        this.label = label;
+    public void setName(String name) {
+        this.name = name;
     }
 }
