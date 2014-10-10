@@ -6,10 +6,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -118,7 +115,7 @@ public class GraphTest {
         assertTrue(graph1.toString().equals("Graph[nodes:2,edges:2]"));
         Graph graph2 = new Graph("muj_graf");
         assertTrue(graph2.toString().equals("Graph muj_graf[nodes:0,edges:0]"));
-        graph1.setLabel("muj_graf2");
+        graph1.setName("muj_graf2");
         assertTrue(graph1.toString().equals("Graph muj_graf2[nodes:2,edges:2]"));
     }
 
@@ -210,6 +207,31 @@ public class GraphTest {
         assertTrue(!component.hasNode(someNodes.get(1)));
 
         graph.getConnectedComponent(someNodes.get(2));
+    }
+
+    @Test
+    public void testLabelByDistance() {
+        Reader reader = new StringReader("6;1-2,2-3,3-4,4-5,5-6,6-1,");
+        Graph graph = null;
+        try {
+            graph = Graph.readGraph(reader);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Node start_node = someNodes.get(0);
+        Node disconected = someNodes.get(1);
+        Node connected = graph.getNodeSet().iterator().next();
+        graph.connectNodes(connected, start_node);
+        graph.addNode(disconected);
+        Map<Node, Integer> labeled = graph.labelByDistanceFrom(start_node);
+        assertTrue(labeled.get(start_node) == 0 && labeled.size() == 7);
+        assertTrue(!labeled.containsKey(disconected));
+
+        assertTrue(graph.getNodeDistance(start_node, disconected) == Integer.MAX_VALUE);
+        assertTrue(graph.getNodeDistance(start_node, connected) == 1);
     }
 
 }

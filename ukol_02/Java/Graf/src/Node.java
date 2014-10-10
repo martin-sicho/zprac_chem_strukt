@@ -1,4 +1,6 @@
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -15,9 +17,10 @@ public class Node {
      */
     private Set<Node> connectedNodes;
     /**
-     * všechny grafy, které obsahují tento vrchol
+     * všechny grafy, které obsahují tento vrchol, včetně číselného
+     * označení tohoto vrcholu v jednotlivých grafech
      */
-    private Set<Graph> associatedGraphs;
+    private Map<Graph, Integer> associatedGraphs;
     /**
      * jednoznačný identifikátor vrcholu
      */
@@ -75,7 +78,7 @@ public class Node {
         this.id = nextId++;
         this.name = label;
         this.connectedNodes = new HashSet<>();
-        this.associatedGraphs = new HashSet<>();
+        this.associatedGraphs = new HashMap<>();
     }
 
     /**
@@ -138,7 +141,7 @@ public class Node {
 
     public void addToGraph(Graph graph) {
         if (!this.isInGraph(graph)) {
-            associatedGraphs.add(graph);
+            associatedGraphs.put(graph, Integer.MAX_VALUE);
             graph.addNode(this);
         }
     }
@@ -151,11 +154,35 @@ public class Node {
     }
 
     public boolean isInGraph(Graph graph) {
-        return associatedGraphs.contains(graph);
+        return associatedGraphs.containsKey(graph);
     }
 
     public int getGraphCount() {
         return associatedGraphs.size();
+    }
+
+    /**
+     * Vrátí číselný popisek tohoto vrcholu v konkrétním grafu.
+     * Defaultně je tento popisek nastaven na {@link java.lang.Integer#MAX_VALUE}.
+     *
+     * @param graph graf
+     * @return číselný popisek tohoto vrcholu v grafu
+     */
+    public int getLabelInGraph(Graph graph) {
+        graph.addNode(this);
+        return associatedGraphs.get(graph);
+    }
+
+    /**
+     * Vrátí číselný popisek tohoto vrcholu v konkrétním grafu.
+     * Defaultně je tento popisek nastaven na {@link java.lang.Integer#MAX_VALUE}.
+     *
+     * Pokud se vrchol nenachází v daném grafu, je do něj automaticky přiřazen.
+     *
+     * @param graph graf
+     */
+    public void setLabelInGraph(Graph graph, int label) {
+        associatedGraphs.put(graph, label);
     }
 
     // overrides
@@ -190,7 +217,7 @@ public class Node {
     }
 
     public Set<Graph> getAssociatedGraphs() {
-        return associatedGraphs;
+        return associatedGraphs.keySet();
     }
 
     // setters

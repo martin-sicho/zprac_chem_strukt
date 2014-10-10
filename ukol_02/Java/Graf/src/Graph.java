@@ -7,11 +7,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Třída reprezentující obecný neorientovaný graf.
+ * Třída reprezentující obecný neorientovaný graf, kde
+ * všechny hrany mají jednotkovou délku.
  *
  * Created by Martin Šícho on 3.10.14.
  */
-public class Graph {
+public class Graph implements Comparator<Node> {
 
     // members
 
@@ -22,7 +23,7 @@ public class Graph {
     /**
      * název grafu
      */
-    private String label;
+    private String name;
 
     // constructors
 
@@ -31,15 +32,15 @@ public class Graph {
      */
     Graph() {
         nodeSet = new HashSet<>();
-        this.label = "";
+        this.name = "";
     }
 
     /**
      * Vytvoří prázdný graf s daným názvem.
      */
-    Graph(String label) {
+    Graph(String name) {
         nodeSet = new HashSet<>();
-        this.label = label;
+        this.name = name;
     }
 
     /**
@@ -61,7 +62,7 @@ public class Graph {
      * @param graph graf, ze kterého se má vytvořit tento nový graf
      */
     Graph(Graph graph) {
-        this.label = graph.getLabel() + "_clone";
+        this.name = graph.getName() + "_clone";
         this.nodeSet = new HashSet<>(graph.nodeSet);
     }
 
@@ -72,9 +73,10 @@ public class Graph {
      *
      * {@code počet_vrcholů;konektivity},
      *
-     * kde konektivity jsou ukončené čárkou a ve formátu: {@code číslo_vrcholu-číslo_vrcholu}.
-     *
+     * kde konektivity jsou ukončené čárkou a ve formátu: {@code číslo_vrcholu-číslo_vrcholu}
      * (např.: 6;1-2,2-3,3-4,4-5,5-6,6-1,).
+     *
+     * Čísla vrcholů jsou automaticky použitá jako jejich jména.
      *
      * @param reader instance {@link java.io.Reader}
      * @return instance třídy {@link Graph}
@@ -108,7 +110,7 @@ public class Graph {
         Map<String, Node> node_map = new HashMap<>();
         for (int i = 1; i <= node_count; i++) {
             Node new_node = new Node(i);
-            node_map.put(new_node.getLabel(), new_node);
+            node_map.put(new_node.getName(), new_node);
         }
         matcher = Pattern.compile("([0-9])+-([0-9])+").matcher(input);
 
@@ -269,7 +271,7 @@ public class Graph {
             }
             return neigbors;
         } else {
-            throw new IllegalArgumentException( String.format("Node '%s' is not present in graph '%s'.", node.getLabel(), this.toString()) );
+            throw new IllegalArgumentException( String.format("Node '%s' is not present in graph '%s'.", node.getName(), this.toString()) );
         }
     }
 
@@ -301,7 +303,7 @@ public class Graph {
 
             return new Graph(visited);
         } else {
-            throw new IllegalArgumentException( String.format("Node '%s' is not present in graph '%s'.", startNode.getLabel(), this.toString()) );
+            throw new IllegalArgumentException( String.format("Node '%s' is not present in graph '%s'.", startNode.getName(), this.toString()) );
         }
     }
 
@@ -327,40 +329,117 @@ public class Graph {
     }
 
     /**
-     * Metoda vrací všechny komponenty obsažené v tomto grafu
-     * jako {@link java.util.Set}.
+     * Metoda vrací počet všech komponent obsažených v tomto grafu.
      *
-     * @return včechny komponenty grafu
+     * @return počet komponent grafu
      */
     public int getConnectedComponentsCount() {
         return getConnectedComponents().size();
     }
 
+    /**
+     * Vrátí minimální vzdálenosti všech vrcholů od {@code startNode} pro tento graf.
+     *
+     * @param startNode počáteční vrchol, ze kterého budu počítat vzdálenosti
+     * @return {@link java.util.Map} vrcholů a jejich minimální vzdálenosti od {@code startNode}
+     */
+    public Map<Node,Integer> labelByDistanceFrom(Node startNode) {
+        if (this.hasNode(startNode)) {
+            Map<Node, Integer> node_distance = new HashMap<>();
+            PriorityQueue<Node> to_visit = new PriorityQueue<>(1, this);
+            Set<Node> visited = new HashSet<>();
+
+            for (Node node : nodeSet) {
+                node.setLabelInGraph(this, Integer.MAX_VALUE);
+            }
+
+            startNode.setLabelInGraph(this, 0);
+            node_distance.put(startNode, 0);
+            to_visit.add(startNode);
+            while (!to_visit.isEmpty()) {
+                Node current = to_visit.poll();
+                visited.add(current);
+
+                for (Node neighbor : this.getNeighbors(current)) {
+                    int g = current.getLabelInGraph(this) + 1;
+                    if (g < neighbor.getLabelInGraph(this) && !visited.contains(neighbor)) {
+                        neighbor.setLabelInGraph(this, g);
+                        node_distance.put(neighbor, g);
+                        to_visit.add(neighbor);
+                    }
+                }
+            }
+
+            return node_distance;
+        } else {
+            throw new IllegalArgumentException( String.format("Node '%s' is not present in graph '%s'.", startNode.getName(), this.toString()) );
+        }
+    }
+
+    /**
+     * Vrátí minimální vzdálenost mezi dvěma vrcholy grafu.
+     *
+     * Pokud tyto vrcholy nejsou spojené hranou
+     * vrátí hodnotu {@link java.lang.Integer#MAX_VALUE}.
+     *
+     * @param node1 první vrchol
+     * @param node2 druhý vrchol
+     * @return vzdálenost prvního a druhého vrcholu
+     */
+    public int getNodeDistance(Node node1, Node node2) {
+        Map<Node, Integer> labeled = this.labelByDistanceFrom(node1);
+        if (labeled.containsKey(node2)) {
+            return labeled.get(node2);
+        } else {
+            return Integer.MAX_VALUE;
+        }
+    }
+
     // overrides
 
     /**
+     * Vrcholy se porovnávají na základě jejich číselného popisku v grafu.
+     * Defaultně je tento popisek nastaven na {@link java.lang.Integer#MAX_VALUE}.
+     *
+     * @param node1 první vrchol
+     * @param node2 druhý vrchol
+     * @return kladné číslo, pokud popisek druhého vrcholu je větší, než hodnota prvního;
+     * nula, pokud jsou oba stejné; záporné číslo, pokud první popisek je menší, než druhý
+     */
+    @Override
+    public int compare(Node node1, Node node2) {
+        if (this.hasNode(node1) && this.hasNode(node2)) {
+            Integer label1 = node1.getLabelInGraph(this);
+            Integer label2 = node2.getLabelInGraph(this);
+            return label1.compareTo(label2);
+        } else {
+            throw new IllegalArgumentException( String.format("Node '%s' or '%s' is not present in graph '%s'.", node1.getName(), node2.getName(), this.toString()) );
+        }
+    }
+
+    /**
      * Vrátí textovou reprezentaci grafu jako:
-     * {@code Graph label[nodes:počet,edges:počet]}.
+     * {@code Graph name[nodes:počet,edges:počet]}.
      *
      * @return stringová reprezentace grafu.
      */
     @Override
     public String toString() {
-        if (label.equals("")) {
+        if (name.equals("")) {
             return String.format("Graph[nodes:%d,edges:%d]", getNodeCount(), getEdgeCount());
         } else {
-            return String.format("Graph %s[nodes:%d,edges:%d]", getLabel(), getNodeCount(), getEdgeCount());
+            return String.format("Graph %s[nodes:%d,edges:%d]", getName(), getNodeCount(), getEdgeCount());
         }
     }
 
     // getters & setters
 
-    public String getLabel() {
-        return label;
+    public String getName() {
+        return name;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
+    public void setName(String label) {
+        this.name = label;
     }
 
     /**
