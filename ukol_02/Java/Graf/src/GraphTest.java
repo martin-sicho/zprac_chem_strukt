@@ -234,4 +234,28 @@ public class GraphTest {
         assertTrue(graph.getNodeDistance(start_node, connected) == 1);
     }
 
+    @Test
+    public void testGetNumberOfCycles() {
+        Reader reader = new StringReader("10;1-2,2-2,2-3,3-4,2-4,2-5,5-6,6-6,5-7,5-8,7-8,7-9,8-10,9-10,");
+        Graph graph = null;
+        try {
+            graph = Graph.readGraph(reader);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        assertTrue(graph.getNumberOfCycles() == 5);
+
+        Node node1 = someNodes.get(0);
+        Node node2 = someNodes.get(1);
+        graph.connectNodes(node1, node2);
+        assertTrue(graph.getNumberOfCycles() == 5);
+        Node node3 = someNodes.get(3);
+        graph.connectNodes(node1, node3);
+        graph.connectNodes(node2, node3);
+        assertTrue(graph.getNumberOfCycles() == 6);
+    }
+
 }

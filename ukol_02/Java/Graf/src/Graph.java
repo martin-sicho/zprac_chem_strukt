@@ -112,7 +112,7 @@ public class Graph implements Comparator<Node> {
             Node new_node = new Node(i);
             node_map.put(new_node.getName(), new_node);
         }
-        matcher = Pattern.compile("([0-9])+-([0-9])+").matcher(input);
+        matcher = Pattern.compile("([0-9]+)-([0-9]+)").matcher(input);
 
         while (matcher.find()) {
             String node1_label = matcher.group(1);
@@ -393,6 +393,40 @@ public class Graph implements Comparator<Node> {
         } else {
             return Integer.MAX_VALUE;
         }
+    }
+
+    /**
+     * Vrací počet cyklů (chordless cycles) v tomto grafu.
+     *
+     * @return počet cyklů (chordless cycles) v tomto grafu
+     */
+    public int getNumberOfCycles() {
+        int cycles_count = 0;
+        for (Graph component : this.getConnectedComponents()) {
+            Queue<Node> to_visit = new LinkedList<>();
+            Set<Node> white_nodes = new HashSet<>(component.getNodeSet());
+            Set<Node> grey_nodes = new HashSet<>();
+            Map<Node,Node> node_parent = new HashMap<>();
+
+            to_visit.add(white_nodes.iterator().next());
+            while (!to_visit.isEmpty()) {
+                Node current = to_visit.poll();
+                for (Node neighbor : component.getNeighbors(current)) {
+                    if (white_nodes.contains(neighbor)) {
+                        node_parent.put(neighbor, current);
+                        white_nodes.remove(neighbor);
+                        grey_nodes.add(neighbor);
+                        to_visit.add(neighbor);
+                    } else if (grey_nodes.contains(neighbor) && node_parent.get(neighbor) != current) {
+                        ++cycles_count;
+                    }
+                }
+                white_nodes.remove(current); // If the node is neither white nor grey, it is black.
+                grey_nodes.remove(current);
+            }
+        }
+
+        return cycles_count;
     }
 
     // overrides
