@@ -12,7 +12,7 @@ def type_check(method):
     def check_type(self, node2, *args, **kwargs):
         if type(self) != type(node2):
             raise TypeError("{0} is not a valid object of type {1}.".format(node2, type(self)))
-        method(self, node2, *args, **kwargs)
+        return method(self, node2, *args, **kwargs)
 
     return check_type
 
@@ -28,7 +28,7 @@ def graph_type_check(method):
     def check_type(self, graph, *args, **kwargs):
         if not isinstance(graph, Graph.Graph):
             raise TypeError("{0} is not a valid object of type Graph.".format(graph))
-        method(self, graph, *args, **kwargs)
+        return method(self, graph, *args, **kwargs)
 
     return check_type
 
@@ -39,13 +39,14 @@ class Node:
         self._assoiciatedGraphs = dict()
         self._name = ""
         if kwargs.has_key("name"):
-            self._name = kwargs["name"]
+            self._name = str(kwargs["name"])
         else:
             self._name = hash(self)
 
     @type_check
     def addNode(self, other):
-        if not other.isConnectedTo(self):
+        neco = other.isConnectedTo(self)
+        if not neco:
             self._connectedNodes.add(other)
             other.addNode(self)
             return
@@ -57,7 +58,7 @@ class Node:
             self._connectedNodes.remove(other)
             other.removeNode(self)
             return
-        self._connectedNodes.remove(other)
+        self._connectedNodes.discard(other)
 
     @type_check
     def isConnectedTo(self, other):
@@ -110,7 +111,7 @@ class Node:
         return self._assoiciatedGraphs.keys()
 
     def setName(self, name):
-        self._name = name
+        self._name = str(name)
 
 
 

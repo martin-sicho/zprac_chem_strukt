@@ -12,7 +12,7 @@ def node_type_check(method):
     def check_type(self, node, *args, **kwargs):
         if not isinstance(node, Node.Node):
             raise AttributeError("{0} is not a valid object of type Node.".format(node))
-        method(self, node, *args, **kwargs)
+        return method(self, node, *args, **kwargs)
 
     return check_type
 
@@ -26,9 +26,9 @@ def two_nodes_type_check(method):
     """
 
     def check_type(self, node1, node2, *args, **kwargs):
-        if isinstance(node1, Node.Node) and isinstance(node2, Node.Node):
+        if not isinstance(node1, Node.Node) or not isinstance(node2, Node.Node):
             raise TypeError("{0} and/or {1} is not a valid object of type Node.".format(node1, node2))
-        method(self, node1, node2, *args, **kwargs)
+        return method(self, node1, node2, *args, **kwargs)
 
     return check_type
 
@@ -37,9 +37,9 @@ class Graph:
     def __init__(self, **kwargs):
         self._nodeSet = set()
         self._name = ""
-        if kwargs["name"]:
+        if kwargs.has_key("name"):
             self._name = kwargs["name"]
-        if kwargs["nodes"]:
+        if kwargs.has_key("nodes"):
             for item in kwargs["nodes"]:
                 item.addToGraph(self)
                 self._nodeSet.add(item)
@@ -66,7 +66,7 @@ class Graph:
                 and neighbor.getGraphCount() == 1:
                     neighbor.removeNode(node)
             node.removeFromGraph(self)
-        self._nodeSet.remove(node)
+        self._nodeSet.discard(node)
 
     @two_nodes_type_check
     def connectNodes(self, node1, node2):
