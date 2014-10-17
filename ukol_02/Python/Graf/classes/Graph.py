@@ -37,6 +37,12 @@ class Graph:
     def __init__(self, **kwargs):
         self._nodeSet = set()
         self._name = ""
+        if kwargs.has_key("graph"):
+            self._name = kwargs["graph"].getName() + "_clone"
+            for item in kwargs["graph"].getNodeSet():
+                item.addToGraph(self)
+                self._nodeSet.add(item)
+
         if kwargs.has_key("name"):
             self._name = kwargs["name"]
         if kwargs.has_key("nodes"):
@@ -44,11 +50,14 @@ class Graph:
                 item.addToGraph(self)
                 self._nodeSet.add(item)
 
+
     @staticmethod
     def readGraph(self, istream):
+        # TODO next
         pass
 
     def writeGraph(self, ostream):
+        # TODO next
         pass
 
     @node_type_check
@@ -59,7 +68,7 @@ class Graph:
 
     @node_type_check
     def removeNode(self, node):
-        if not node.isInGraph(self):
+        if node.isInGraph(self):
             for neighbor in node.getConnectedNodes():
                 if neighbor in self._nodeSet \
                 and neighbor.isInGraph(self) \
