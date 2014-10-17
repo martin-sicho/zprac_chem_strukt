@@ -1,4 +1,4 @@
-from Graph import Graph
+import Graph
 
 def type_check(method):
     """
@@ -16,7 +16,7 @@ def type_check(method):
 
     return check_type
 
-def graph_check(method):
+def graph_type_check(method):
     """
     Dekorator kontrolujici zda je druhy parametr
     metody typu Graph.
@@ -26,24 +26,8 @@ def graph_check(method):
     """
 
     def check_type(self, graph, *args, **kwargs):
-        if not isinstance(graph, Graph):
+        if not isinstance(graph, Graph.Graph):
             raise TypeError("{0} is not a valid object of type Graph.".format(graph))
-        method(self, graph, *args, **kwargs)
-
-    return check_type
-
-def node_check(method):
-    """
-    Dekorator kontrolujici zda je druhy parametr
-    metody typu Node.
-
-    :param method: kontrolovana metoda
-    :return:
-    """
-
-    def check_type(self, graph, *args, **kwargs):
-        if not isinstance(graph, Node):
-            raise AttributeError("{0} is not a valid object of type Node.".format(graph))
         method(self, graph, *args, **kwargs)
 
     return check_type
@@ -85,32 +69,32 @@ class Node:
     def getConnectedNodes(self):
         return set(self._connectedNodes)
 
-    @graph_check
+    @graph_type_check
     def addToGraph(self, graph):
         if not self.isInGraph(graph):
             self._assoiciatedGraphs[graph] = hash(self)
             graph.addNode(self)
 
-    @graph_check
+    @graph_type_check
     def removeFromGraph(self, graph):
         if self.isInGraph(graph):
             self._assoiciatedGraphs.pop(graph)
             graph.removeNode(self)
 
-    @graph_check
+    @graph_type_check
     def isInGraph(self, graph):
         return self._assoiciatedGraphs.has_key(graph)
 
     def getGraphCount(self):
         return len(self._assoiciatedGraphs)
 
-    @graph_check
+    @graph_type_check
     def getLabelInGraph(self, graph):
         if not self.isInGraph(graph):
             raise LookupError("{0} does not belong to {1}.".format(self, graph))
         return self._assoiciatedGraphs[graph]
 
-    @graph_check
+    @graph_type_check
     def setLabelInGraph(self, graph, label):
         if not self.isInGraph(graph):
             raise LookupError("{0} does not belong to {1}.".format(self, graph))

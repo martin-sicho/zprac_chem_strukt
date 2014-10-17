@@ -1,5 +1,6 @@
 import sys
-from Node import Node
+from classes.Node import Node
+
 
 def main(args):
     node = Node()
