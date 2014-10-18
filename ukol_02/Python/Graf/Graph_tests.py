@@ -159,7 +159,52 @@ class GraphTests(unittest.TestCase):
             print "Writing representation to file: '{0}'".format(path)
             graph.writeGraph(outfile)
 
+    def testGetConnectedComponents(self):
+        graph = Graph.readGraph(StringIO(u'6;1-2,2-3,3-4,4-5,5-6,6-1'))
 
+        disconected = self.someNodes[0]
+        graph.addNode(disconected)
+
+        components = graph.getConnectedComponents()
+        self.assertTrue(len(components) == 2)
+        self.assertTrue(graph.getConnectedComponentsCount() == 2)
+
+        some_node_from_graph = graph.getNodeSet().pop()
+        some_node_from_graph.addNode(self.someNodes[1])
+        component = graph.getConnectedComponent(some_node_from_graph)
+        self.assertTrue(not component.hasNode(self.someNodes[1]))
+
+        self.assertRaises(LookupError, graph.getConnectedComponent, self.someNodes[2])
+
+    def testLabelByDistance(self):
+        graph = Graph.readGraph(StringIO(u'6;1-2,2-3,3-4,4-5,5-6,6-1,'))
+
+        start_node = self.someNodes[0]
+        disconnected = self.someNodes[1]
+        connected = graph.getNodeSet().pop()
+        graph.connectNodes(connected, start_node)
+        graph.addNode(disconnected)
+
+        labeling = graph.labelByDistanceFrom(start_node)
+        self.assertTrue(labeling[start_node] == 0 and len(labeling) == 7)
+        self.assertTrue(not labeling.has_key(disconnected))
+
+        self.assertTrue(graph.getNodeDistance(start_node, disconnected) == Graph.MAX_DISTANCE)
+        self.assertTrue(graph.getNodeDistance(start_node, connected) == 1)
+
+    def testGetNumberOfCycles(self):
+        graph = Graph.readGraph(StringIO(u'10;1-2,2-2,2-3,3-4,2-4,2-5,5-6,6-6,5-7,5-8,7-8,7-9,8-10,9-10,'))
+
+        self.assertEqual(graph.getNumberOfCycles(), 5)
+
+        node1 = self.someNodes[0]
+        node2 = self.someNodes[1]
+        graph.connectNodes(node1, node2)
+        self.assertTrue(graph.getNumberOfCycles() == 5)
+        node3 = self.someNodes[2]
+        graph.connectNodes(node1, node3)
+        graph.connectNodes(node2, node3)
+        self.assertTrue(graph.getNumberOfCycles() == 6)
 
 if __name__ == '__main__':
     unittest.main()

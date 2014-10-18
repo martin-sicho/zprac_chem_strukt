@@ -1,3 +1,4 @@
+from Queue import Queue, PriorityQueue
 import sys
 
 import Node
@@ -36,6 +37,8 @@ def two_nodes_type_check(method):
     return check_type
 
 class Graph:
+
+    MAX_DISTANCE = 999999999
 
     def __init__(self, **kwargs):
         self._nodeSet = set()
@@ -145,6 +148,109 @@ class Graph:
             return neighbors
         else:
             raise LookupError("Node '{0}' is not present in graph '{1}'.".format(node, self))
+
+    @node_type_check
+    def getConnectedComponent(self, startNode):
+        if self.hasNode(startNode):
+            current_node = startNode
+            queue = Queue()
+            visited = set()
+
+            queue.put(current_node)
+            while not queue.empty():
+                current_node = queue.get()
+                visited.add(current_node)
+                neigbors = self.getNeighbors(current_node)
+                for neighbor in neigbors:
+                    if neighbor not in visited:
+                        queue.put(neighbor)
+
+            return Graph(nodes=visited)
+        else:
+            raise LookupError("Node '{0}' is not present in graph '{1}'.".format(startNode, self))
+
+    def getConnectedComponents(self):
+        all_nodes_count = self.getNodeCount()
+        component_nodes_count = 0
+        found_components = set()
+        not_visited = set(self._nodeSet)
+
+        while all_nodes_count != component_nodes_count:
+            component = self.getConnectedComponent(not_visited.pop())
+            not_visited.difference_update(component.getNodeSet())
+            found_components.add(component)
+            component_nodes_count += component.getNodeCount()
+
+        return found_components
+
+    def getConnectedComponentsCount(self):
+        return len(self.getConnectedComponents())
+
+    @node_type_check
+    def labelByDistanceFrom(self, startNode):
+        if self.hasNode(startNode):
+            node_distance = dict()
+            to_visit = PriorityQueue()
+            visited = set()
+
+            for node in self._nodeSet:
+                node.setLabelInGraph(self, Graph.MAX_DISTANCE)
+
+            startNode.setLabelInGraph(self, 0)
+            node_distance[startNode] = 0
+            to_visit.put( (0, startNode) )
+            while not to_visit.empty():
+                current = to_visit.get()[1]
+                visited.add(current)
+
+                for neighbor in self.getNeighbors(current):
+                    g = current.getLabelInGraph(self) + 1
+                    if g < neighbor.getLabelInGraph(self) and neighbor not in visited:
+                        neighbor.setLabelInGraph(self, g)
+                        node_distance[neighbor] = g
+                        to_visit.put( (g, neighbor) )
+
+            return node_distance
+
+        else:
+            raise LookupError("Node '{0}' is not present in graph '{1}'.".format(startNode, self))
+
+    @two_nodes_type_check
+    def getNodeDistance(self, node1, node2):
+        labeled = self.labelByDistanceFrom(node1)
+        if labeled.has_key(node2):
+            return labeled[node2]
+        else:
+            return Graph.MAX_DISTANCE
+
+    def getNumberOfCycles(self):
+        cycles_count = 0
+        for component in self.getConnectedComponents():
+            to_visit = set()
+            white_nodes = set(component.getNodeSet())
+            grey_nodes = set()
+            node_parent = dict()
+
+            to_visit.add(component.getNodeSet().pop())
+            while not len(to_visit) == 0:
+                current = to_visit.pop()
+                for neighbor in component.getNeighbors(current):
+                    if neighbor in white_nodes:
+                        if neighbor == current:
+                            cycles_count+=1
+                            continue
+                        node_parent[neighbor] = current
+                        white_nodes.discard(neighbor)
+                        grey_nodes.add(neighbor)
+                        to_visit.add(neighbor)
+                    elif neighbor in grey_nodes and node_parent[neighbor] != current:
+                        cycles_count+=1
+                white_nodes.discard(current) # If the node is neither white nor grey, it is black.
+                grey_nodes.discard(current)
+
+        return cycles_count
+
+    # overrides
 
     def __repr__(self):
         if self._name == "":
