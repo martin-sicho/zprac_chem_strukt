@@ -221,15 +221,16 @@ public class GraphTest {
         }
 
         Node start_node = someNodes.get(0);
-        Node disconected = someNodes.get(1);
+        Node disconnected = someNodes.get(1);
         Node connected = graph.getNodeSet().iterator().next();
         graph.connectNodes(connected, start_node);
-        graph.addNode(disconected);
-        Map<Node, Integer> labeled = graph.labelByDistanceFrom(start_node);
-        assertTrue(labeled.get(start_node) == 0 && labeled.size() == 7);
-        assertTrue(!labeled.containsKey(disconected));
+        graph.addNode(disconnected);
 
-        assertTrue(graph.getNodeDistance(start_node, disconected) == Integer.MAX_VALUE);
+        Map<Node, Integer> labeling = graph.labelByDistanceFrom(start_node);
+        assertTrue(labeling.get(start_node) == 0 && labeling.size() == 7);
+        assertTrue(!labeling.containsKey(disconnected));
+
+        assertTrue(graph.getNodeDistance(start_node, disconnected) == Integer.MAX_VALUE);
         assertTrue(graph.getNodeDistance(start_node, connected) == 1);
     }
 
