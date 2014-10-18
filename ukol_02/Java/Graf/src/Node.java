@@ -161,6 +161,10 @@ public class Node {
         return associatedGraphs.size();
     }
 
+    public Set<Graph> getAssociatedGraphs() {
+        return associatedGraphs.keySet();
+    }
+
     /**
      * Vrátí číselný popisek tohoto vrcholu v konkrétním grafu.
      * Defaultně je tento popisek nastaven na {@link java.lang.Integer#MAX_VALUE}.
@@ -169,7 +173,9 @@ public class Node {
      * @return číselný popisek tohoto vrcholu v grafu
      */
     public int getLabelInGraph(Graph graph) {
-        graph.addNode(this);
+        if (!graph.hasNode(this)) {
+            throw new IllegalArgumentException(String.format("%s is not present in graph %s", this, graph));
+        }
         return associatedGraphs.get(graph);
     }
 
@@ -203,7 +209,7 @@ public class Node {
 
     @Override
     public String toString() {
-        return String.format("Node[order:%d,name:%s]", connectedNodes.size(), getName());
+        return String.format("Node[order:%d,name:%s]", getNodeCount(), getName());
     }
 
     // getters
@@ -214,10 +220,6 @@ public class Node {
 
     public String getName() {
         return name;
-    }
-
-    public Set<Graph> getAssociatedGraphs() {
-        return associatedGraphs.keySet();
     }
 
     // setters

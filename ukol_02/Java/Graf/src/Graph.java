@@ -52,7 +52,7 @@ public class Graph implements Comparator<Node> {
         this();
         for (Node node : nodeSet) {
             node.addToGraph(this);
-            nodeSet.add(node);
+            this.nodeSet.add(node);
         }
     }
 
@@ -62,8 +62,12 @@ public class Graph implements Comparator<Node> {
      * @param graph graf, ze kterého se má vytvořit tento nový graf
      */
     Graph(Graph graph) {
+        this();
         this.name = graph.getName() + "_clone";
-        this.nodeSet = new HashSet<>(graph.nodeSet);
+        for (Node node : graph.getNodeSet()) {
+            node.addToGraph(this);
+            nodeSet.add(node);
+        }
     }
 
     // static methods
@@ -87,9 +91,15 @@ public class Graph implements Comparator<Node> {
         StringWriter input_writer = new StringWriter();
 
         int data = reader.read();
+        int last_data = data;
         while (data != -1) {
             input_writer.append((char) data);
+            last_data = data;
             data = reader.read();
+        }
+
+        if ( (char) last_data != ',') {
+            input_writer.append(',');
         }
 
         input_writer.flush();
@@ -117,6 +127,9 @@ public class Graph implements Comparator<Node> {
         while (matcher.find()) {
             String node1_label = matcher.group(1);
             String node2_label = matcher.group(2);
+            if (!node_map.containsKey(node1_label) || !node_map.containsKey(node2_label)) {
+                throw new ParseException(String.format("Label of node '%s' and/or '%s' is invalid.", node1_label, node2_label), 0);
+            }
             node_map.get(node1_label).addNode(node_map.get(node2_label));
         }
 
@@ -152,9 +165,9 @@ public class Graph implements Comparator<Node> {
         for (Node node : nodeSet) {
             int label = node_label.get(node);
             visited.add(node);
-            for (Node neigbor : this.getNeighbors(node)) {
-                if (!visited.contains(neigbor)) {
-                    int neigbor_label = node_label.get(neigbor);
+            for (Node neighbor : this.getNeighbors(node)) {
+                if (!visited.contains(neighbor)) {
+                    int neigbor_label = node_label.get(neighbor);
                     writer.write(String.format("%d-%d,", label, neigbor_label));
                 }
             }
@@ -472,8 +485,8 @@ public class Graph implements Comparator<Node> {
         return name;
     }
 
-    public void setName(String label) {
-        this.name = label;
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**

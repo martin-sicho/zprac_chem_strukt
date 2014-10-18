@@ -119,6 +119,29 @@ public class GraphTest {
         assertTrue(graph1.toString().equals("Graph muj_graf2[nodes:2,edges:2]"));
     }
 
+    @Test (expected=IllegalArgumentException.class)
+    public void testGetNeigbors() {
+        Graph graph = new Graph();
+        Node node1 = someNodes.get(0);
+        Node node2 = someNodes.get(1);
+        Node node3 = someNodes.get(2);
+        Node node4 = someNodes.get(3);
+        node2.addNode(node1);
+        node2.addNode(node3);
+        node2.addNode(node4);
+        graph.addNode(node1);
+        graph.addNode(node2);
+        graph.addNode(node3);
+
+        assertTrue(graph.getNeighbors(node2).size() == 2);
+        for (Node node : graph.getNeighbors(node2)) {
+            assertTrue(node == node1 || node == node3);
+        }
+
+        Node node5 = someNodes.get(4);
+        graph.getNeighbors(node5);
+    }
+
     @Test
     public void testReadGraph() {
         Reader reader = new StringReader("6;1-2,2-3,3-4,4-5,5-6,6-1,");
@@ -148,7 +171,6 @@ public class GraphTest {
         }
         Graph graph = new Graph(new HashSet<>(someNodes.subList(0, 5)));
 
-
         StringWriter string_writer = new StringWriter();
         try {
             graph.writeGraph(string_writer);
@@ -160,31 +182,8 @@ public class GraphTest {
     }
 
     @Test (expected=IllegalArgumentException.class)
-    public void testGetNeigbors() {
-        Graph graph = new Graph();
-        Node node1 = someNodes.get(0);
-        Node node2 = someNodes.get(1);
-        Node node3 = someNodes.get(2);
-        Node node4 = someNodes.get(3);
-        node2.addNode(node1);
-        node2.addNode(node3);
-        node2.addNode(node4);
-        graph.addNode(node1);
-        graph.addNode(node2);
-        graph.addNode(node3);
-
-        assertTrue(graph.getNeighbors(node2).size() == 2);
-        for (Node node : graph.getNeighbors(node2)) {
-            assertTrue(node == node1 || node == node3);
-        }
-
-        Node node5 = someNodes.get(4);
-        graph.getNeighbors(node5);
-    }
-
-    @Test (expected=IllegalArgumentException.class)
     public void testGetComponents() {
-        Reader reader = new StringReader("6;1-2,2-3,3-4,4-5,5-6,6-1,");
+        Reader reader = new StringReader("6;1-2,2-3,3-4,4-5,5-6,6-1");
         Graph graph = null;
         try {
             graph = Graph.readGraph(reader);
