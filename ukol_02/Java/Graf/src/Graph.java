@@ -426,6 +426,10 @@ public class Graph implements Comparator<Node> {
                 Node current = to_visit.poll();
                 for (Node neighbor : component.getNeighbors(current)) {
                     if (white_nodes.contains(neighbor)) {
+                        if (neighbor == current) {
+                            ++cycles_count;
+                            continue;
+                        }
                         node_parent.put(neighbor, current);
                         white_nodes.remove(neighbor);
                         grey_nodes.add(neighbor);
