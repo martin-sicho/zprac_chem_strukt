@@ -1,4 +1,7 @@
+import sys
+
 import Node
+
 
 def node_type_check(method):
     """
@@ -52,13 +55,44 @@ class Graph:
 
 
     @staticmethod
-    def readGraph(self, istream):
-        # TODO next
-        pass
+    def readGraph(istream):
+        if not istream.closed:
+            contents = ''
+            try:
+                contents = istream.readline()
+                node_count = int(contents.split(';')[0])
+                connectivity = contents.split(';')[1].split(',')
+                new_nodes = { str(x): Node.Node(name=x) for x in range(1, node_count + 1)}
+                for connection in connectivity:
+                    if connection != '':
+                        connected_nodes = connection.split('-')
+                        new_nodes[connected_nodes[0]].addNode(new_nodes[connected_nodes[1]])
+                print "cessfully read input: '{0}'".format(contents)
+                return Graph(nodes=new_nodes.values())
+            except Exception as exp:
+                sys.stderr.write(repr(exp) + '\n')
+                raise IOError("Parsing of input ({0}) FAILED.".format(contents))
+        else:
+            raise IOError('Input stream must be opened.')
+
+    # non-static methods
 
     def writeGraph(self, ostream):
-        # TODO next
-        pass
+        node_label = dict()
+        label_counter = 0
+        for node in self._nodeSet:
+            label_counter+=1
+            node_label[node] = label_counter
+
+        ostream.write(u'{0};'.format(self.getNodeCount()))
+        visited = set()
+        for node in self._nodeSet:
+            label = node_label[node]
+            visited.add(node)
+            for neighbor in self.getNeighbors(node):
+                if neighbor not in visited:
+                    neighbor_label = node_label[neighbor]
+                    ostream.write(u'{0}-{1},'.format(label, neighbor_label))
 
     @node_type_check
     def addNode(self, node):
@@ -90,17 +124,6 @@ class Graph:
     def getNodeCount(self):
         return len(self._nodeSet)
 
-    @node_type_check
-    def getNeighbors(self, node):
-        if self.hasNode(node):
-            neighbors = set()
-            for neighbor in node.getConnectedNodes():
-                if neighbor.isInGraph(self):
-                    neighbors.add(neighbor)
-            return neighbors
-        else:
-            raise LookupError("Node '{0}' is not present in graph '{1}'.".format(node, self))
-
     def getEdgeCount(self):
         edge_count = 0
         self_connected = 0
@@ -112,11 +135,25 @@ class Graph:
                     self_connected+=1
         return edge_count / 2 + self_connected
 
+    @node_type_check
+    def getNeighbors(self, node):
+        if self.hasNode(node):
+            neighbors = set()
+            for neighbor in node.getConnectedNodes():
+                if neighbor.isInGraph(self):
+                    neighbors.add(neighbor)
+            return neighbors
+        else:
+            raise LookupError("Node '{0}' is not present in graph '{1}'.".format(node, self))
+
     def __repr__(self):
         if self._name == "":
             return "Graph[nodes:{0},edges:{1}]".format(self.getNodeCount(), self.getEdgeCount())
         else:
             return "Graph {0}[nodes:{1},edges:{2}]".format(self.getName(), self.getNodeCount(), self.getEdgeCount())
+
+
+    # getters
 
     def getName(self):
         return self._name

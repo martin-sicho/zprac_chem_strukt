@@ -2,4 +2,5 @@
 *.iml
 *.class
 out/
+test_files/
 *.pyc
