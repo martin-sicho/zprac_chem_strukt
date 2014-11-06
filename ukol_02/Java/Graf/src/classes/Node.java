@@ -1,3 +1,5 @@
+package classes;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -209,7 +211,7 @@ public class Node {
 
     @Override
     public String toString() {
-        return String.format("Node[order:%d,name:%s]", getNodeCount(), getName());
+        return String.format("classes.Node[order:%d,name:%s]", getNodeCount(), getName());
     }
 
     // getters

@@ -1,3 +1,5 @@
+package classes;
+
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -132,8 +134,6 @@ public class Graph implements Comparator<Node> {
             }
             node_map.get(node1_label).addNode(node_map.get(node2_label));
         }
-
-        System.out.println( "Successfully read input: '" + input + "'");
 
         return new Graph(new HashSet<>(node_map.values()));
     }
@@ -284,7 +284,7 @@ public class Graph implements Comparator<Node> {
             }
             return neigbors;
         } else {
-            throw new IllegalArgumentException( String.format("Node '%s' is not present in graph '%s'.", node.getName(), this.toString()) );
+            throw new IllegalArgumentException( String.format("classes.Node '%s' is not present in graph '%s'.", node.getName(), this.toString()) );
         }
     }
 
@@ -316,7 +316,7 @@ public class Graph implements Comparator<Node> {
 
             return new Graph(visited);
         } else {
-            throw new IllegalArgumentException( String.format("Node '%s' is not present in graph '%s'.", startNode.getName(), this.toString()) );
+            throw new IllegalArgumentException( String.format("classes.Node '%s' is not present in graph '%s'.", startNode.getName(), this.toString()) );
         }
     }
 
@@ -385,7 +385,7 @@ public class Graph implements Comparator<Node> {
 
             return node_distance;
         } else {
-            throw new IllegalArgumentException( String.format("Node '%s' is not present in graph '%s'.", startNode.getName(), this.toString()) );
+            throw new IllegalArgumentException( String.format("classes.Node '%s' is not present in graph '%s'.", startNode.getName(), this.toString()) );
         }
     }
 
@@ -464,22 +464,22 @@ public class Graph implements Comparator<Node> {
             Integer label2 = node2.getLabelInGraph(this);
             return label1.compareTo(label2);
         } else {
-            throw new IllegalArgumentException( String.format("Node '%s' or '%s' is not present in graph '%s'.", node1.getName(), node2.getName(), this.toString()) );
+            throw new IllegalArgumentException( String.format("classes.Node '%s' or '%s' is not present in graph '%s'.", node1.getName(), node2.getName(), this.toString()) );
         }
     }
 
     /**
      * Vrátí textovou reprezentaci grafu jako:
-     * {@code Graph name[nodes:počet,edges:počet]}.
+     * {@code classes.Graph name[nodes:počet,edges:počet]}.
      *
      * @return stringová reprezentace grafu.
      */
     @Override
     public String toString() {
         if (name.equals("")) {
-            return String.format("Graph[nodes:%d,edges:%d]", getNodeCount(), getEdgeCount());
+            return String.format("classes.Graph[nodes:%d,edges:%d]", getNodeCount(), getEdgeCount());
         } else {
-            return String.format("Graph %s[nodes:%d,edges:%d]", getName(), getNodeCount(), getEdgeCount());
+            return String.format("classes.Graph %s[nodes:%d,edges:%d]", getName(), getNodeCount(), getEdgeCount());
         }
     }
 
