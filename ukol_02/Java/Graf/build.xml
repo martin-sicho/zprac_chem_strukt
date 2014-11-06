@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="graf" default="all">
+  
+  
+  <property file="build.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="700m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/rcs/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/.pyc/**"/>
+    <exclude name="**/.pyo/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/*.lib/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/.bundle/**"/>
+    <exclude name="**/*.rbc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.zip"/>
+    <include name="*.apk"/>
+    <include name="*.war"/>
+    <include name="*.egg"/>
+    <include name="*.ear"/>
+    <include name="*.ane"/>
+    <include name="*.swc"/>
+    <include name="*.jar"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+  </patternset>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module Graf -->
+  
+  <dirname property="module.graf.basedir" file="${ant.file}"/>
+  
+  
+  
+  <property name="compiler.args.graf" value="-encoding UTF-8 -source 1.7 -target 1.7 ${compiler.args}"/>
+  
+  <property name="graf.output.dir" value="${module.graf.basedir}/out/production/Graf"/>
+  <property name="graf.testoutput.dir" value="${module.graf.basedir}/out/test/Graf"/>
+  
+  <path id="graf.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="graf.module.production.classpath">
+    <fileset dir="${basedir}/lib/idea/lib">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  <path id="graf.runtime.production.module.classpath">
+    <pathelement location="${graf.output.dir}"/>
+    <fileset dir="${basedir}/lib/idea/lib">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  <path id="graf.module.classpath">
+    <pathelement location="${graf.output.dir}"/>
+    <fileset dir="${basedir}/lib/idea/lib">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  <path id="graf.runtime.module.classpath">
+    <pathelement location="${graf.testoutput.dir}"/>
+    <pathelement location="${graf.output.dir}"/>
+    <fileset dir="${basedir}/lib/idea/lib">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.graf">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.graf">
+    <patternset refid="excluded.from.module.graf"/>
+  </patternset>
+  
+  <path id="graf.module.sourcepath">
+    <dirset dir="${module.graf.basedir}">
+      <include name="src"/>
+      <include name="lib"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.graf" depends="compile.module.graf.production,compile.module.graf.tests" description="Compile module Graf"/>
+  
+  <target name="compile.module.graf.production" description="Compile module Graf; production classes">
+    <mkdir dir="${graf.output.dir}"/>
+    <javac destdir="${graf.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.graf}"/>
+      <bootclasspath refid="graf.module.bootclasspath"/>
+      <classpath refid="graf.module.production.classpath"/>
+      <src refid="graf.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.graf"/>
+    </javac>
+    
+    <copy todir="${graf.output.dir}">
+      <fileset dir="${module.graf.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.graf.basedir}/lib">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.graf.tests" depends="compile.module.graf.production" description="compile module Graf; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.graf" description="cleanup module">
+    <delete dir="${graf.output.dir}"/>
+    <delete dir="${graf.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.graf" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.graf" description="build all modules"/>
+  
+  <target name="all" depends="build.modules" description="build all"/>
+</project>

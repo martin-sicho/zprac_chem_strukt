@@ -32,7 +32,7 @@ public class Graph implements Comparator<Node> {
     /**
      * Vytvoří prázdný graf.
      */
-    Graph() {
+    public Graph() {
         nodeSet = new HashSet<>();
         this.name = "";
     }
@@ -40,7 +40,7 @@ public class Graph implements Comparator<Node> {
     /**
      * Vytvoří prázdný graf s daným názvem.
      */
-    Graph(String name) {
+    public Graph(String name) {
         nodeSet = new HashSet<>();
         this.name = name;
     }
@@ -50,7 +50,7 @@ public class Graph implements Comparator<Node> {
      *
      * @param nodeSet vrcholy nového grafu
      */
-    Graph(Set<Node> nodeSet) {
+    public Graph(Set<Node> nodeSet) {
         this();
         for (Node node : nodeSet) {
             node.addToGraph(this);
@@ -63,7 +63,7 @@ public class Graph implements Comparator<Node> {
      *
      * @param graph graf, ze kterého se má vytvořit tento nový graf
      */
-    Graph(Graph graph) {
+    public Graph(Graph graph) {
         this();
         this.name = graph.getName() + "_clone";
         for (Node node : graph.getNodeSet()) {
