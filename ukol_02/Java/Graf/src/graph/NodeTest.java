@@ -1,4 +1,4 @@
-package classes;
+package graph;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -96,9 +96,9 @@ public class NodeTest {
         node1.addNode(node3);
         node2.addNode(node3);
 
-        assertTrue(node1.toString().equals("classes.Node[order:2,name:A]"));
-        assertTrue(node2.toString().equals("classes.Node[order:2,name:B]"));
-        assertTrue(node3.toString().equals("classes.Node[order:2,name:C]"));
+        assertTrue(node1.toString().equals("graph.Node[order:2,name:A]"));
+        assertTrue(node2.toString().equals("graph.Node[order:2,name:B]"));
+        assertTrue(node3.toString().equals("graph.Node[order:2,name:C]"));
     }
 
     @Test

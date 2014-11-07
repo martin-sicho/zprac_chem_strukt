@@ -1,4 +1,4 @@
-import classes.Graph;
+import graph.Graph;
 
 import java.io.IOException;
 import java.io.Reader;

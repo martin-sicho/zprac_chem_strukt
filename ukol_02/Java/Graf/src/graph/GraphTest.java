@@ -1,4 +1,4 @@
-package classes;
+package graph;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -114,11 +114,11 @@ public class GraphTest {
 
         graph1.connectNodes(node1, node2);
         graph1.connectNodes(node1, node1);
-        assertTrue(graph1.toString().equals("classes.Graph[nodes:2,edges:2]"));
+        assertTrue(graph1.toString().equals("graph.Graph[nodes:2,edges:2]"));
         Graph graph2 = new Graph("muj_graf");
-        assertTrue(graph2.toString().equals("classes.Graph muj_graf[nodes:0,edges:0]"));
+        assertTrue(graph2.toString().equals("graph.Graph muj_graf[nodes:0,edges:0]"));
         graph1.setName("muj_graf2");
-        assertTrue(graph1.toString().equals("classes.Graph muj_graf2[nodes:2,edges:2]"));
+        assertTrue(graph1.toString().equals("graph.Graph muj_graf2[nodes:2,edges:2]"));
     }
 
     @Test (expected=IllegalArgumentException.class)

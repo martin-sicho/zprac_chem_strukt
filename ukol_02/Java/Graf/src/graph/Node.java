@@ -1,4 +1,4 @@
-package classes;
+package graph;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -211,7 +211,7 @@ public class Node {
 
     @Override
     public String toString() {
-        return String.format("classes.Node[order:%d,name:%s]", getNodeCount(), getName());
+        return String.format("graph.Node[order:%d,name:%s]", getNodeCount(), getName());
     }
 
     // getters

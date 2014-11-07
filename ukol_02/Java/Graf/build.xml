@@ -121,7 +121,7 @@
   
   <target name="compile.module.graf" depends="compile.module.graf.production,compile.module.graf.tests" description="Compile module Graf"/>
   
-  <target name="compile.module.graf.production" description="Compile module Graf; production classes">
+  <target name="compile.module.graf.production" description="Compile module Graf; production graph">
     <mkdir dir="${graf.output.dir}"/>
     <javac destdir="${graf.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.graf}"/>
@@ -143,7 +143,7 @@
     </copy>
   </target>
   
-  <target name="compile.module.graf.tests" depends="compile.module.graf.production" description="compile module Graf; test classes" unless="skip.tests"/>
+  <target name="compile.module.graf.tests" depends="compile.module.graf.production" description="compile module Graf; test graph" unless="skip.tests"/>
   
   <target name="clean.module.graf" description="cleanup module">
     <delete dir="${graf.output.dir}"/>

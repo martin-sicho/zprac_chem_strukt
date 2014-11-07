@@ -1,4 +1,4 @@
-package classes;
+package graph;
 
 import java.io.Reader;
 import java.io.StringWriter;
@@ -284,7 +284,7 @@ public class Graph implements Comparator<Node> {
             }
             return neigbors;
         } else {
-            throw new IllegalArgumentException( String.format("classes.Node '%s' is not present in graph '%s'.", node.getName(), this.toString()) );
+            throw new IllegalArgumentException( String.format("graph.Node '%s' is not present in graph '%s'.", node.getName(), this.toString()) );
         }
     }
 
@@ -316,7 +316,7 @@ public class Graph implements Comparator<Node> {
 
             return new Graph(visited);
         } else {
-            throw new IllegalArgumentException( String.format("classes.Node '%s' is not present in graph '%s'.", startNode.getName(), this.toString()) );
+            throw new IllegalArgumentException( String.format("graph.Node '%s' is not present in graph '%s'.", startNode.getName(), this.toString()) );
         }
     }
 
@@ -385,7 +385,7 @@ public class Graph implements Comparator<Node> {
 
             return node_distance;
         } else {
-            throw new IllegalArgumentException( String.format("classes.Node '%s' is not present in graph '%s'.", startNode.getName(), this.toString()) );
+            throw new IllegalArgumentException( String.format("graph.Node '%s' is not present in graph '%s'.", startNode.getName(), this.toString()) );
         }
     }
 
@@ -464,22 +464,22 @@ public class Graph implements Comparator<Node> {
             Integer label2 = node2.getLabelInGraph(this);
             return label1.compareTo(label2);
         } else {
-            throw new IllegalArgumentException( String.format("classes.Node '%s' or '%s' is not present in graph '%s'.", node1.getName(), node2.getName(), this.toString()) );
+            throw new IllegalArgumentException( String.format("graph.Node '%s' or '%s' is not present in graph '%s'.", node1.getName(), node2.getName(), this.toString()) );
         }
     }
 
     /**
      * Vrátí textovou reprezentaci grafu jako:
-     * {@code classes.Graph name[nodes:počet,edges:počet]}.
+     * {@code graph.Graph name[nodes:počet,edges:počet]}.
      *
      * @return stringová reprezentace grafu.
      */
     @Override
     public String toString() {
         if (name.equals("")) {
-            return String.format("classes.Graph[nodes:%d,edges:%d]", getNodeCount(), getEdgeCount());
+            return String.format("graph.Graph[nodes:%d,edges:%d]", getNodeCount(), getEdgeCount());
         } else {
-            return String.format("classes.Graph %s[nodes:%d,edges:%d]", getName(), getNodeCount(), getEdgeCount());
+            return String.format("graph.Graph %s[nodes:%d,edges:%d]", getName(), getNodeCount(), getEdgeCount());
         }
     }
 
