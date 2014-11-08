@@ -182,7 +182,7 @@ public class Node {
     }
 
     /**
-     * Vrátí číselný popisek tohoto vrcholu v konkrétním grafu.
+     * Nastaví číselný popisek tohoto vrcholu v konkrétním grafu.
      * Defaultně je tento popisek nastaven na {@link java.lang.Integer#MAX_VALUE}.
      *
      * Pokud se vrchol nenachází v daném grafu, je do něj automaticky přiřazen.

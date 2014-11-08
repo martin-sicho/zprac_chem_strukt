@@ -50,7 +50,7 @@ public class Graph implements Comparator<Node> {
      *
      * @param nodeSet vrcholy nového grafu
      */
-    public Graph(Set<Node> nodeSet) {
+    public Graph(Collection<Node> nodeSet) {
         this();
         for (Node node : nodeSet) {
             node.addToGraph(this);
