@@ -446,6 +446,62 @@ public class Graph implements Comparator<Node> {
         return cycles_count;
     }
 
+    public boolean[][] getAdjecencyMatrix() {
+        int atom_count = (int) getNodeCount();
+        boolean[][] matrix = new boolean[atom_count][atom_count];
+
+        int label_counter = 0;
+        for (Node atom : getNodeSet()) {
+            atom.setLabelInGraph(this, label_counter++);
+        }
+
+        for (Node atom : getNodeSet()) {
+            for (Node neigbor : getNeighbors(atom)) {
+                matrix[atom.getLabelInGraph(this)][neigbor.getLabelInGraph(this)] = true;
+            }
+        }
+
+        return matrix;
+    }
+
+    public double estimateLeadingEigenvalue() {
+        boolean[][] matrix = this.getAdjecencyMatrix();
+        int n = matrix[0].length;
+
+        double[] b = {1, 1, 1, 1, 1, 1, 1}; // {-2, -1, -7E-1, 1E-17, 7E-1, 1, 2}
+        double norm = 0;
+        int iter_count = 100;
+
+        for (int iter = 0; iter < iter_count; iter++) {
+            double[] tmp = new double[n];
+            for (int i = 0; i < n; i++) {
+                tmp[i] = 0;
+                for (int j = 0; j < n; j++) {
+                    int val = 0;
+                    if (matrix[i][j]) {
+                        val = 1;
+                    }
+                    tmp[i] += val * b[j];
+                }
+            }
+
+            double norm_sq = 0;
+            for (int i = 0; i < n; i++) {
+                norm_sq += tmp[i] * tmp[i];
+            }
+            norm = Math.sqrt(norm_sq);
+
+
+            for (int i = 0; i < n; i++) {
+                b[i] = tmp[i] / norm;
+            }
+        }
+
+        return norm;
+    }
+
+
+
     // overrides
 
     /**

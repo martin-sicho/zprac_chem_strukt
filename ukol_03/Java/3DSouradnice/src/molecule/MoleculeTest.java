@@ -12,11 +12,13 @@ public class MoleculeTest extends TestCase {
 
     FileReader tolueneFile;
     FileReader cocaineFile;
+    FileReader trimetHexFile;
 
     @Override
     protected void setUp() throws FileNotFoundException{
         tolueneFile = new FileReader("testfiles/toluene.mol");
         cocaineFile = new FileReader("testfiles/cocaine.mol");
+        trimetHexFile = new FileReader("testfiles/3-methyl_hexane.mol");
     }
 
     public void testReadMolecule() throws IOException, ParseException {
@@ -46,6 +48,27 @@ public class MoleculeTest extends TestCase {
             check = true;
         }
         assertTrue(check);
+
+    }
+
+    public void testEstimateLeadingEigenvalue() throws Exception {
+        Molecule trimetHex = Molecule.readMolFile(trimetHexFile);
+        boolean[][] matrix = trimetHex.getAdjecencyMatrix();
+
+        int n = matrix[0].length;
+        for (int x = 0; x < n; x++) {
+            for (int y = 0; y < n; y++) {
+                int value = 0;
+                if (matrix[x][y]) {
+                    value = 1;
+                }
+                System.out.print(value);
+            }
+            System.out.print('\n');
+        }
+
+        System.out.println(trimetHex.estimateLeadingEigenvalue());
+
 
     }
 }

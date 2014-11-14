@@ -5,6 +5,7 @@ import graph.Graph;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -115,12 +116,12 @@ public class Molecule extends Graph {
 
     // non-static methods
 
-    // overrides
+    public void writeDotty(Writer writer) {
+        // TODO: implement
+    }
 
-
-    @Override
-    public String toString() {
-        return String.format("molecule.Molecule %s[nodes:%d,edges:%d]", getName(), getNodeCount(), getEdgeCount());
+    public void writeSVG(Writer writer) {
+        // TODO: implement
     }
 
     public long getAtomCount() {
@@ -129,5 +130,12 @@ public class Molecule extends Graph {
 
     public long getBondCount() {
         return getEdgeCount();
+    }
+
+    // overrides
+
+    @Override
+    public String toString() {
+        return String.format("molecule.Molecule %s[nodes:%d,edges:%d]", getName(), getNodeCount(), getEdgeCount());
     }
 }
