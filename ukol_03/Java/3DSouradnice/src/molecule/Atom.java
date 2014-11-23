@@ -2,7 +2,9 @@ package molecule;
 
 import graph.Node;
 
-import java.util.Map;
+//import java.util.ArrayList;
+//import java.util.List;
+//import java.util.Map;
 
 /**
  * Created by Martin Šícho on 7.11.14.
@@ -14,23 +16,23 @@ public class Atom extends Node {
 
     // constructors
 
-    public Atom(double x, double y, double z) {
-        super();
-        setCoords(x, y, z);
-    }
-
-    public Atom(String name, double x, double y, double z) {
-        super(name);
-        setCoords(x, y, z);
-    }
-
-    public Atom(double[] coords) {
-        super();
-        if (coords.length < 3) {
-            throw new ArrayStoreException(String.format("Array size is insufficient (%d).", coords.length));
-        }
-        setCoords(coords[0], coords[1], coords[2]);
-    }
+//    public Atom(double x, double y, double z) {
+//        super();
+//        setCoords(x, y, z);
+//    }
+//
+//    public Atom(String name, double x, double y, double z) {
+//        super(name);
+//        setCoords(x, y, z);
+//    }
+//
+//    public Atom(double[] coords) {
+//        super();
+//        if (coords.length < 3) {
+//            throw new ArrayStoreException(String.format("Array size is insufficient (%d).", coords.length));
+//        }
+//        setCoords(coords[0], coords[1], coords[2]);
+//    }
 
     public Atom(String name, double[] coords) {
         super(name);
@@ -42,20 +44,28 @@ public class Atom extends Node {
 
     // non-static methods
 
-    public void getCoords(double[] coords) {
-        if (coords.length < 3) {
-            throw new ArrayStoreException(String.format("Array size is insufficient (%d).", coords.length));
-        }
-        coords[0] = x;
-        coords[1] = y;
-        coords[2] = z;
-    }
+//    public void getCoords(double[] coords) {
+//        if (coords.length < 3) {
+//            throw new ArrayStoreException(String.format("Array size is insufficient (%d).", coords.length));
+//        }
+//        coords[0] = x;
+//        coords[1] = y;
+//        coords[2] = z;
+//    }
+//
+//    public void getCoords(Map<Character, Double> coords_map) {
+//        coords_map.put('x', x);
+//        coords_map.put('y', y);
+//        coords_map.put('z', z);
+//    }
 
-    public void getCoords(Map<Character, Double> coords_map) {
-        coords_map.put('x', x);
-        coords_map.put('y', y);
-        coords_map.put('z', z);
-    }
+//    public List<Double> getCoords() {
+//        List<Double> coords = new ArrayList<>();
+//        coords.add(getX());
+//        coords.add(getY());
+//        coords.add(getZ());
+//        return coords;
+//    }
 
     public void setCoords(double x, double y, double z) {
         this.x = x;

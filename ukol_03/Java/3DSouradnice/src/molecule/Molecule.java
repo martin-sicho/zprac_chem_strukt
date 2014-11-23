@@ -2,11 +2,19 @@ package molecule;
 
 import graph.Graph;
 import graph.Node;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.*;
 import java.text.ParseException;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -19,12 +27,12 @@ public class Molecule extends Graph {
 
     // constructors
 
-    public Molecule(Collection<Atom> atoms) {
-        super();
-        for (Atom atom : atoms) {
-            this.addNode(atom);
-        }
-    }
+//    public Molecule(Collection<Atom> atoms) {
+//        super();
+//        for (Atom atom : atoms) {
+//            this.addNode(atom);
+//        }
+//    }
 
     public Molecule(String name, Collection<Atom> atoms) {
         super(name);
@@ -120,7 +128,7 @@ public class Molecule extends Graph {
     // non-static methods
 
     public void writeDotty(Writer writer) throws IOException {
-        Set<Node> visited = new HashSet<Node>();
+        Set<Node> visited = new HashSet<>();
         writer.write("graph " + getName() + " {\n");
         int counter = 0;
         for (Node node : getNodeSet()) {
@@ -140,8 +148,73 @@ public class Molecule extends Graph {
         writer.flush();
     }
 
-    public void writeSVG(Writer writer) {
-        // TODO: implement
+    public void writeSVG(Writer writer) throws ParserConfigurationException, TransformerException, FileNotFoundException {
+        Double scale = 100.0;
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document document = builder.newDocument();
+        document.setXmlStandalone(false);
+
+        Element svg = document.createElement("svg");
+        document.appendChild(svg);
+
+        //Set some attributes on the root node that are
+        // required for proper rendering.
+        svg.setAttribute("width","100%");
+        svg.setAttribute("height","100%");
+        svg.setAttribute("viewBox","500 -500 1000 1000");
+        svg.setAttribute("version","1.1");
+        svg.setAttribute("xmlns","http://www.w3.org/2000/svg");
+
+        Set<Node> visited = new HashSet<>();
+        for (Node node : getNodeSet()) {
+            Atom atom = (Atom) node;
+            visited.add(node);
+            for (Node neighbor : getNeighbors(node)) {
+                Atom atom_neigbor = (Atom) neighbor;
+                if (!visited.contains(neighbor)) {
+                    Element line  = document.createElement("line");
+                    line.setAttribute("x1", Double.toString(scale * atom.getX()));
+                    line.setAttribute("y1", Double.toString(scale * atom.getY()));
+                    line.setAttribute("x2", Double.toString(scale * atom_neigbor.getX()));
+                    line.setAttribute("y2", Double.toString(scale * atom_neigbor.getY()));
+                    line.setAttribute("style","stroke:rgb(0,0,0);stroke-width:2");
+                    svg.appendChild(line);
+                }
+            }
+
+        }
+
+
+        //Get a TransformerFactory object.
+        TransformerFactory xformFactory = TransformerFactory.newInstance();
+
+        //Get an XSL Transformer object.
+        Transformer transformer = xformFactory.newTransformer();
+
+        //This statement is new to this lesson.  It sets
+        // the standalone property in the XML declaration,
+        // which appears as the first line of the output
+        // file.
+        transformer.setOutputProperty(OutputKeys.STANDALONE,"no");
+
+        //Get a DOMSource object that represents the
+        // Document object
+        DOMSource source = new DOMSource(document);
+
+        //Get a StreamResult object that points to the
+        // screen. Then transform the DOM sending XML to
+        // the screen.
+        //StreamResult scrResult = new StreamResult(System.out);
+        //transformer.transform(source, scrResult);
+
+        //Get a StreamResult object that points to the
+        // output file.  Then transform the DOM sending XML
+        // to the file
+        StreamResult fileResult = new StreamResult(writer);
+        transformer.transform(source,fileResult);
+
     }
 
     public long getAtomCount() {

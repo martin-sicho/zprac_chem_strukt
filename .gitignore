@@ -4,3 +4,4 @@ out/
 test_files/
 *.pyc
 *.dot
+*.svg

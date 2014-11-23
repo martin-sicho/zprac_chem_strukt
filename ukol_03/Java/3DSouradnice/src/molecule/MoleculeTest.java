@@ -89,7 +89,15 @@ public class MoleculeTest extends TestCase {
         initial_vector = new double[ (int) dimetPent.getAtomCount()];
         Arrays.fill(initial_vector, 1.0);
         System.out.println("2,4-dimethylpentan: " + dimetPent.estimateLeadingEigenvalue(initial_vector));
+    }
 
+    public void  testWriteSVG() throws Exception {
+        Writer outStream = new PrintWriter("toluene.svg");
+        Molecule toluene = Molecule.readMolFile(tolueneFile);
+        toluene.writeSVG(outStream);
 
+        outStream = new PrintWriter("cocaine.svg");
+        Molecule cocaine = Molecule.readMolFile(cocaineFile);
+        cocaine.writeSVG(outStream);
     }
 }
