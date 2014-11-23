@@ -1,15 +1,14 @@
 package molecule;
 
 import graph.Graph;
+import graph.Node;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,6 +54,10 @@ public class Molecule extends Graph {
                 ++line_number;
                 input_writer.flush();
                 String input = input_writer.toString();
+
+                if (input.equals("M  END\n")) {
+                    break;
+                }
 
                 if (line_number == 1) {
                     name = input.trim();
@@ -116,8 +119,25 @@ public class Molecule extends Graph {
 
     // non-static methods
 
-    public void writeDotty(Writer writer) {
-        // TODO: implement
+    public void writeDotty(Writer writer) throws IOException {
+        Set<Node> visited = new HashSet<Node>();
+        writer.write("graph " + getName() + " {\n");
+        int counter = 0;
+        for (Node node : getNodeSet()) {
+            node.setLabelInGraph(this, ++counter);
+            writer.write(node.getLabelInGraph(this) + "[label=\"" + node.getName() + "\"];\n");
+        }
+
+        for (Node node : getNodeSet()) {
+            visited.add(node);
+            for (Node neighbor : getNeighbors(node)) {
+                if (!visited.contains(neighbor)) {
+                    writer.write(node.getLabelInGraph(this) + " -- " + neighbor.getLabelInGraph(this) + ";\n");
+                }
+            }
+        }
+        writer.write("}\n");
+        writer.flush();
     }
 
     public void writeSVG(Writer writer) {

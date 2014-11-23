@@ -2,23 +2,23 @@ package molecule;
 
 import junit.framework.TestCase;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.*;
 import java.text.ParseException;
+import java.util.Arrays;
 
 public class MoleculeTest extends TestCase {
 
     FileReader tolueneFile;
     FileReader cocaineFile;
     FileReader trimetHexFile;
+    FileReader dimetPentFile;
 
     @Override
     protected void setUp() throws FileNotFoundException{
         tolueneFile = new FileReader("testfiles/toluene.mol");
         cocaineFile = new FileReader("testfiles/cocaine.mol");
         trimetHexFile = new FileReader("testfiles/3-methyl_hexane.mol");
+        dimetPentFile = new FileReader("testfiles/2,4-dimethylpentan.sdf");
     }
 
     public void testReadMolecule() throws IOException, ParseException {
@@ -67,7 +67,28 @@ public class MoleculeTest extends TestCase {
             System.out.print('\n');
         }
 
-        System.out.println(trimetHex.estimateLeadingEigenvalue());
+        double[] initial_vector = {1, 1, 1, 1, 1, 1, 1};
+        System.out.println(trimetHex.estimateLeadingEigenvalue(initial_vector));
+
+
+    }
+
+    public void testWriteDotty() throws Exception {
+        Molecule dimetPent = Molecule.readMolFile(dimetPentFile);
+        Molecule etPent = Molecule.readMolFile(new FileReader("testfiles/3-ethylpentan.sdf"));
+        Writer file = new FileWriter("testfiles/dimetPent.dot");
+        dimetPent.writeDotty(file);
+        file = new FileWriter("testfiles/3-ethylpentan.dot");
+        etPent.writeDotty(file);
+
+        // homework
+        double[] initial_vector = new double[ (int) etPent.getAtomCount()];
+        Arrays.fill(initial_vector, 1.0);
+        System.out.println("3-ethylpentan: " + etPent.estimateLeadingEigenvalue(initial_vector));
+
+        initial_vector = new double[ (int) dimetPent.getAtomCount()];
+        Arrays.fill(initial_vector, 1.0);
+        System.out.println("2,4-dimethylpentan: " + dimetPent.estimateLeadingEigenvalue(initial_vector));
 
 
     }

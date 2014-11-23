@@ -464,11 +464,10 @@ public class Graph implements Comparator<Node> {
         return matrix;
     }
 
-    public double estimateLeadingEigenvalue() {
+    public double estimateLeadingEigenvalue(double[] initial_vector) {
         boolean[][] matrix = this.getAdjecencyMatrix();
         int n = matrix[0].length;
 
-        double[] b = {1, 1, 1, 1, 1, 1, 1}; // {-2, -1, -7E-1, 1E-17, 7E-1, 1, 2}
         double norm = 0;
         int iter_count = 100;
 
@@ -481,7 +480,7 @@ public class Graph implements Comparator<Node> {
                     if (matrix[i][j]) {
                         val = 1;
                     }
-                    tmp[i] += val * b[j];
+                    tmp[i] += val * initial_vector[j];
                 }
             }
 
@@ -493,7 +492,7 @@ public class Graph implements Comparator<Node> {
 
 
             for (int i = 0; i < n; i++) {
-                b[i] = tmp[i] / norm;
+                initial_vector[i] = tmp[i] / norm;
             }
         }
 
