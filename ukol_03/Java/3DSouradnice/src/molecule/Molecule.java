@@ -229,6 +229,6 @@ public class Molecule extends Graph {
 
     @Override
     public String toString() {
-        return String.format("molecule.Molecule %s[nodes:%d,edges:%d]", getName(), getNodeCount(), getEdgeCount());
+        return String.format("molecule.Molecule %s[atoms:%d,bonds:%d]", getName(), getNodeCount(), getEdgeCount());
     }
 }
