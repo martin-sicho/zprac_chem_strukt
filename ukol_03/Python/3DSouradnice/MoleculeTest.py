@@ -11,6 +11,11 @@ class SumarniVzorecTests(unittest.TestCase):
         outfile = open("toluene.dot", mode="w")
         self.toluene.writeDotty(outfile)
 
+    def testWriteSVG(self):
+        outfile = open("cocaine.svg", mode="w")
+        self.cocaine.writeSVG(outfile)
+        print self.cocaine
+
 if __name__ == '__main__':
     unittest.main()
 

@@ -24,10 +24,10 @@ class Atom(Node.Node):
         return self._x
 
     def getY(self):
-        return self._x
+        return self._y
 
     def getZ(self):
-        return self._x
+        return self._z
 
     def setX(self, x):
         self._x = x

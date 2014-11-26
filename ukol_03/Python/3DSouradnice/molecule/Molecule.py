@@ -1,4 +1,5 @@
 import Graph, Atom, re, sys
+import xml.etree.ElementTree as etree
 
 
 class Molecule(Graph.Graph):
@@ -76,8 +77,46 @@ class Molecule(Graph.Graph):
             for node in self.getNodeSet():
                 visited.add(node)
                 for neighbor in self.getNeighbors(node):
-                    if not (neighbor in visited):
+                    if neighbor not in visited:
                         ostream.write(str(node.getLabelInGraph(self)) + " -- " + str(neighbor.getLabelInGraph(self)) + ";\n")
             ostream.write("}\n")
         else:
-            raise IOError('Input stream must be opened.')
+            raise IOError('Output stream must be opened.')
+
+    def writeSVG(self, ostream):
+        if not ostream.closed:
+            scale = 100.0
+            svg = etree.Element(
+                "svg"
+                , attrib={
+                    "width" : "100%"
+                    , "height" : "100%"
+                    , "viewBox" : "500 -500 1000 1000"
+                    , "version" : "1.1"
+                    , "xmlns" : "http://www.w3.org/2000/svg"
+                }
+            )
+
+            visited = set()
+            for node in self.getNodeSet():
+                visited.add(node)
+                for neighbor in self.getNeighbors(node):
+                    if neighbor not in visited:
+                        line = etree.Element(
+                            "line"
+                            , attrib={
+                                "x1" : str(scale * node.getX())
+                                , "y1" : str(scale * node.getY())
+                                , "x2" : str(scale * neighbor.getX())
+                                , "y2" : str(scale * neighbor.getY())
+                                , "style" : "stroke:rgb(0,0,0);stroke-width:2"
+                            }
+                        )
+                        svg.append(line)
+
+            ostream.write(etree.tostring(svg, encoding="utf-8"))
+        else:
+            raise IOError('Output stream must be opened.')
+
+    def __repr__(self):
+        return "molecule.Molecule {0}[atoms:{1},bonds:{2}]".format(self.getName(), self.getNodeCount(), self.getEdgeCount())
