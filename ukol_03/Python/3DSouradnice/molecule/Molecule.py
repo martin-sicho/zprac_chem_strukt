@@ -57,9 +57,27 @@ class Molecule(Graph.Graph):
                     raise RuntimeError("Molfile parsing failed. It seems the input file is not a valid Molfile. Line: {0}".format(line_number))
 
                 return Molecule(atom_list, name=name)
-
             except Exception as exp:
                 sys.stderr.write(repr(exp) + '\n')
                 raise exp
+        else:
+            raise IOError('Input stream must be opened.')
+
+    def writeDotty(self, ostream):
+        if not ostream.closed:
+            visited = set()
+            ostream.write("graph " + self.getName() + " {\n")
+            counter = 0
+            for node in self.getNodeSet():
+                counter+=1
+                node.setLabelInGraph(self, counter)
+                ostream.write(str(node.getLabelInGraph(self)) + "[label=\"" + node.getName() + "\"];\n")
+
+            for node in self.getNodeSet():
+                visited.add(node)
+                for neighbor in self.getNeighbors(node):
+                    if not (neighbor in visited):
+                        ostream.write(str(node.getLabelInGraph(self)) + " -- " + str(neighbor.getLabelInGraph(self)) + ";\n")
+            ostream.write("}\n")
         else:
             raise IOError('Input stream must be opened.')

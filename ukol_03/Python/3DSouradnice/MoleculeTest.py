@@ -7,8 +7,9 @@ class SumarniVzorecTests(unittest.TestCase):
         self.toluene = Molecule.readMolFile(open("testfiles/toluene.mol"))
         self.cocaine = Molecule.readMolFile(open("testfiles/cocaine.mol"))
 
-    def testReadMolFile(self):
-        pass
+    def testWriteDotty(self):
+        outfile = open("toluene.dot", mode="w")
+        self.toluene.writeDotty(outfile)
 
 if __name__ == '__main__':
     unittest.main()
