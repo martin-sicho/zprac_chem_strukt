@@ -71,7 +71,7 @@ def filterCandidateSet(mol, **kwargs):
         for candidate in candidates:
             if mol.HasSubstructMatch(candidate):
                 to_remove.add(candidate)
-    candidates.difference_update(to_remove)
+        candidates.difference_update(to_remove)
 
 def main(args):
     INPUT_DIR = "../../smiles/"
@@ -113,7 +113,7 @@ def main(args):
 
     with open("result.smi", mode="w") as outfile:
         for mol in result_list:
-            outfile.write(Chem.MolToSmiles(mol) + "\t" + str(mol.MolWt) + "\n")
+            outfile.write(Chem.MolToSmiles(mol) + "\t" + mol.GetProp("_Name") + "\t" + str(mol.MolWt) + "\n")
 
 if __name__ == "__main__":
     main(sys.argv)
