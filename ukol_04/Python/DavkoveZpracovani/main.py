@@ -49,33 +49,29 @@ def appendToSet(mol):
         appendToSet.set.add(mol)
 appendToSet.set = set()
 
-# 4 # FIXME: do this correctly
+# 4 #
 
-# def appendToAcceptedSet(mol, **kwargs):
-#     accepted = appendToAcceptedSet.args[0]
-#     atom_count = mol.GetNumHeavyAtoms()
-#     if atom_count <= 4:
-#         if not accepted:
-#             accepted.add(mol)
-#             return
-#
-#         to_remove = set()
-#         found_superstructure = False
-#         for item in accepted:
-#             if mol.HasSubstructMatch(item):
-#                 to_remove.add(item)
-#             if item.HasSubstructMatch(mol):
-#                 found_superstructure = True
-#
-#         accepted.difference_update(to_remove)
-#         if not found_superstructure:
-#             accepted.add(mol)
-#     else:
-#         to_remove = set()
-#         for item in accepted:
-#             if mol.HasSubstructMatch(item):
-#                 to_remove.add(item)
-#         accepted.difference_update(to_remove)
+def buildCandidateSet(mol, **kwargs):
+    candidates = buildCandidateSet.args[0]
+    to_remove = buildCandidateSet.args[1]
+    atom_count = mol.GetNumHeavyAtoms()
+    if atom_count <= 4:
+        for candidate in candidates:
+            if mol.HasSubstructMatch(candidate):
+                to_remove.add(candidate)
+            elif candidate.HasSubstructMatch(mol):
+                to_remove.add(mol)
+        candidates.add(mol)
+
+def filterCandidateSet(mol, **kwargs):
+    candidates = filterCandidateSet.args[0]
+    to_remove = set()
+    atom_count = mol.GetNumHeavyAtoms()
+    if atom_count > 4:
+        for candidate in candidates:
+            if mol.HasSubstructMatch(candidate):
+                to_remove.add(candidate)
+    candidates.difference_update(to_remove)
 
 def main(args):
     INPUT_DIR = "../../smiles/"
@@ -95,9 +91,29 @@ def main(args):
     # filter_method_parser.run()
 
     # 4 #
-    # accepted_set = set()
-    # filter_method_parser = FileParser(appendToAcceptedSet, INPUT_DIR, args=[accepted_set])
-    # filter_method_parser.run()
+    # first pass
+    candidate_set = set()
+    removed_candidates = set()
+    candidate_set_parser = FileParser(buildCandidateSet, INPUT_DIR, args=[candidate_set, removed_candidates])
+    candidate_set_parser.run()
+    candidate_set.difference_update(removed_candidates)
+
+    # print "FIRST PASS FINISHED."
+
+    # second pass
+    candidate_set_filter = FileParser(filterCandidateSet, INPUT_DIR, args=[candidate_set])
+    candidate_set_filter.run()
+
+    # sort results
+    result_list = list(candidate_set)
+    for mol in result_list:
+        weight = Descriptors.ExactMolWt(mol)
+        mol.MolWt = weight
+    result_list.sort(key=lambda x : x.MolWt)
+
+    with open("result.smi", mode="w") as outfile:
+        for mol in result_list:
+            outfile.write(Chem.MolToSmiles(mol) + "\t" + str(mol.MolWt) + "\n")
 
 if __name__ == "__main__":
     main(sys.argv)
