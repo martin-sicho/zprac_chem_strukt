@@ -30,7 +30,7 @@ def save_mols_with_nitrile(mol, **kwargs):
 def save_mols_with_nitrile_ret_function(mol):
     if mol:
         with open("mols_with_nitrile_group.smi", mode="a") as outfile:
-            outfile.write(Chem.MolToSmiles(mol) + "\n")
+            outfile.write(Chem.MolToSmiles(mol, isomericSmiles=True) + "\n")
 
 def delete_old_outfiles(*args, **kwargs):
     old_files = [ x for x in os.listdir(".") if x.endswith(".smi")]
@@ -113,7 +113,7 @@ def main(args):
 
     with open("result.smi", mode="w") as outfile:
         for mol in result_list:
-            outfile.write(Chem.MolToSmiles(mol) + "\t" + mol.GetProp("_Name") + "\t" + str(mol.MolWt) + "\n")
+            outfile.write(Chem.MolToSmiles(mol, isomericSmiles=True) + "\t" + mol.GetProp("_Name") + "\t" + str(mol.MolWt) + "\n")
 
 if __name__ == "__main__":
     main(sys.argv)
